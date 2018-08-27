@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -86,20 +87,20 @@ public class NetworkUtils {
 
 
 
-    public static String[] getJSONData(String jsonString) throws JSONException {
+    public static ArrayList<Movie> getJSONData(String jsonString) throws JSONException {
         final String RESULTS_KEY = "results";
         final String TITLE_KEY = "title";
+        final String ID_KEY= "id";
 
-        String[] parsedMovieData = null;
+        ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
             JSONObject rootJsonObject = new JSONObject(jsonString);
             JSONArray resultsArray = rootJsonObject.getJSONArray(RESULTS_KEY);
 
-            parsedMovieData = new String[resultsArray.length()];
-
             for (int i =0; i < resultsArray.length(); i++){
                 String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
-                parsedMovieData[i]=jsonTitle;
+                int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
+                parsedMovieData.add(new Movie(jsonTitle,jsonID));
             }
 
             return parsedMovieData;

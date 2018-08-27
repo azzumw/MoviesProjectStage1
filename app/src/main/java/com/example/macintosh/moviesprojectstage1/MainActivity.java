@@ -14,12 +14,14 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.macintosh.moviesprojectstage1.model.Movie;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,13 +76,13 @@ public class MainActivity extends AppCompatActivity {
         int itemClickedID = item.getItemId();
 
         switch (itemClickedID){
-            case R.id.search_id: loadMovieData(); return false;
+            case R.id.sort_by_id: startActivity(new Intent(this,PreferenceSortActivity.class)); return true;
             default:return true;
         }
 
     }
 
-    public class MoviesAsyncTask extends AsyncTask<String,Void,String[]>{
+    public class MoviesAsyncTask extends AsyncTask<String,Void,ArrayList<Movie>>{
 
 
         @Override
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String[] doInBackground(String... urls) {
+        protected ArrayList<Movie> doInBackground(String... urls) {
             String searchURL = urls[0];
             URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
             mURLResults.setText(movieRequestURL.toString());
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 jsonResult = NetworkUtils.getResponseFromHttpUrl(movieRequestURL);
 
-                String [] simpleJsonMovieData = NetworkUtils.getJSONData(jsonResult);
+                 ArrayList<Movie> simpleJsonMovieData = NetworkUtils.getJSONData(jsonResult);
 
 
                 return simpleJsonMovieData;
@@ -116,13 +118,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(ArrayList<Movie> movieData) {
             progressBar.setVisibility(View.INVISIBLE);
 
             if(movieData!= null){
                 showJsonDataView();
-                for (String movie : movieData){
-                    mSearchResults.append(movie + "\n");
+                for (Movie movie : movieData){
+                    mSearchResults.append(movie.getTitle() + " " + movie.getid() + "\n");
                 }
             }
             else{
