@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MoviesProjectStage1</string>
+    <string name="search_menu_title">Search</string>
+    <string name="error_message">Failed to get results. Please try again!</string>
 </resources>
