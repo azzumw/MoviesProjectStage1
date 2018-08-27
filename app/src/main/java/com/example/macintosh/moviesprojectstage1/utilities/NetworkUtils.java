@@ -3,6 +3,12 @@ package com.example.macintosh.moviesprojectstage1.utilities;
 import android.net.Uri;
 import android.widget.ArrayAdapter;
 
+import com.example.macintosh.moviesprojectstage1.model.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -16,8 +22,10 @@ import java.util.Scanner;
  */
 
 public class NetworkUtils {
-    private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=51ed01ec1db0ac9a518638cb27934aec";
+    //private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=51ed01ec1db0ac9a518638cb27934aec";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
 
+    private static final String api_key_param = "api_key";
     private static final String LANGUAGE_PARAM = "language";
     private static final String EN_US = "en-US";
 
@@ -40,8 +48,8 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildUrl(String keywordValue){
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,SORTBY_POPULARITY).appendQueryParameter(PARAM_KEYWORD,keywordValue).build();
+    public static URL buildUrl(String apikeyValue){
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(api_key_param,apikeyValue).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,SORTBY_POPULARITY).build();
         URL  url = null;
 
         try {
@@ -74,6 +82,28 @@ public class NetworkUtils {
         } finally {
             httpURLConnection.disconnect();
         }
+    }
+
+
+
+    public static String[] getJSONData(String jsonString) throws JSONException {
+        final String RESULTS_KEY = "results";
+        final String TITLE_KEY = "title";
+
+        String[] parsedMovieData = null;
+
+            JSONObject rootJsonObject = new JSONObject(jsonString);
+            JSONArray resultsArray = rootJsonObject.getJSONArray(RESULTS_KEY);
+
+            parsedMovieData = new String[resultsArray.length()];
+
+            for (int i =0; i < resultsArray.length(); i++){
+                String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
+                parsedMovieData[i]=jsonTitle;
+            }
+
+            return parsedMovieData;
+
     }
 
     public static String getQueryParam(){

@@ -16,45 +16,37 @@ import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText mSearchEditText;
     private TextView mURLResults;
     private TextView mSearchResults;
     private TextView mErrorMessagetv;
 
     private ProgressBar progressBar;
+
+    private final String API_KEY = "51ed01ec1db0ac9a518638cb27934aec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSearchEditText = findViewById(R.id.et_search);
         mURLResults = findViewById(R.id.tv__url_result);
         mSearchResults = findViewById(R.id.tv_search_results);
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
+
+        loadMovieData();
+
     }
 
-    private void makeTMDBSearchQuery()  {
 
-        URL url = null;
-
-        String keyword = mSearchEditText.getText().toString();
-        if (keyword.isEmpty()){
-            url = NetworkUtils.buildUrl();
-        }
-
-         url = NetworkUtils.buildUrl(keyword);
-
-        mURLResults.setText(url.toString());
-
-
-        MoviesAsyncTask moviesAsyncTask = new MoviesAsyncTask();
-        moviesAsyncTask.execute(url);
+    private void loadMovieData(){
+        new MoviesAsyncTask().execute(API_KEY);
     }
 
     /**
@@ -82,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
         int itemClickedID = item.getItemId();
 
         switch (itemClickedID){
-            case R.id.search_id: makeTMDBSearchQuery(); return false;
+            case R.id.search_id: loadMovieData(); return false;
             default:return true;
         }
 
     }
 
-    public class MoviesAsyncTask extends AsyncTask<URL,Void,String>{
+    public class MoviesAsyncTask extends AsyncTask<String,Void,String[]>{
 
 
         @Override
@@ -98,25 +90,40 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(URL... urls) {
-            URL searchURL = urls[0];
-            String result = null;
+        protected String[] doInBackground(String... urls) {
+            String searchURL = urls[0];
+            URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
+            mURLResults.setText(movieRequestURL.toString());
+            String jsonResult = null;
+            if(urls.length==0){
+                return null;
+            }
 
             try {
-                result = NetworkUtils.getResponseFromHttpUrl(searchURL);
+                jsonResult = NetworkUtils.getResponseFromHttpUrl(movieRequestURL);
+
+                String [] simpleJsonMovieData = NetworkUtils.getJSONData(jsonResult);
+
+
+                return simpleJsonMovieData;
+
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); return null;
+            } catch (JSONException je){
+                je.getStackTrace();
+                return null;
             }
-            return result;
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(String[] movieData) {
             progressBar.setVisibility(View.INVISIBLE);
 
-            if(s!= null && s!=""){
+            if(movieData!= null){
                 showJsonDataView();
-                mSearchResults.setText(s);
+                for (String movie : movieData){
+                    mSearchResults.append(movie + "\n");
+                }
             }
             else{
                 showErrorMessage();
