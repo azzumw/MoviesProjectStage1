@@ -11,6 +11,8 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,16 +38,31 @@ public class MainActivity extends AppCompatActivity {
     private TextView mErrorMessagetv;
 
     private ProgressBar progressBar;
+    private RecyclerView mRecyclerView;
+    private MovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mURLResults = findViewById(R.id.tv__url_result);
-        mSearchResults = findViewById(R.id.tv_search_results);
+        //mURLResults = findViewById(R.id.tv__url_result);
+//        mSearchResults = findViewById(R.id.tv_search_results);
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
+        mRecyclerView = findViewById(R.id.rv_main_act);
+
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
+
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        mMovieAdapter = new MovieAdapter();
+
+        mRecyclerView.setAdapter(mMovieAdapter);
+
 
         loadMovieData();
 
@@ -53,9 +70,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadMovieData(){
+
+        showJsonDataView();
+
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
         String END_POINT = pref.getString(getString(R.string.Pref_Key), "");
+
+
         new MoviesAsyncTask().execute(END_POINT);
     }
 
@@ -64,12 +86,12 @@ public class MainActivity extends AppCompatActivity {
      * */
     private void showJsonDataView(){
         mErrorMessagetv.setVisibility(View.INVISIBLE);
-        mSearchResults.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage(){
         mErrorMessagetv.setVisibility(View.VISIBLE);
-        mSearchResults.setVisibility(View.INVISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -105,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             final String searchURL = urls[0];
 
             URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
-            mURLResults.setText(movieRequestURL.toString());
+
 
             String jsonResult = null;
             if(urls.length==0){
@@ -134,9 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(movieData!= null){
                 showJsonDataView();
-                for (Movie movie : movieData){
-                    mSearchResults.append(movie.getTitle() + "\t\t" + movie.getid() + "\t\t\t" + movie.getVoteCount() +"\n");
-                }
+                mMovieAdapter.setMovieData(movieData);
             }
             else{
                 showErrorMessage();
