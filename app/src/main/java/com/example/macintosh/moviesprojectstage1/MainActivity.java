@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             if(movieData!= null){
                 showJsonDataView();
                 for (Movie movie : movieData){
-                    mSearchResults.append(movie.getTitle() + " " + movie.getid() + "\n");
+                    mSearchResults.append(movie.getTitle() + "\t\t" + movie.getid() + "\t\t\t" + movie.getVoteCount() +"\n");
                 }
             }
             else{

@@ -1,7 +1,6 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
 import android.net.Uri;
-import android.widget.ArrayAdapter;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
 
@@ -26,8 +25,10 @@ public class NetworkUtils {
     //private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=51ed01ec1db0ac9a518638cb27934aec";
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
 
-    private static final String api_key_param = "api_key";
-    private static final String api_key_value = "51ed01ec1db0ac9a518638cb27934aec";
+    private static final String API_KEY_PARAM = "api_key";
+    private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
+
+
     private static final String LANGUAGE_PARAM = "language";
     private static final String EN_US = "en-US";
 
@@ -51,7 +52,7 @@ public class NetworkUtils {
     }
 
     public static URL buildUrl(String prefValue){
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(api_key_param,api_key_value).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_KEY_PARAM, API_KEY_VALUE).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
         URL  url = null;
 
         try {
@@ -92,6 +93,7 @@ public class NetworkUtils {
         final String RESULTS_KEY = "results";
         final String TITLE_KEY = "title";
         final String ID_KEY= "id";
+        final String VOTE_COUNT_KEY= "vote_count";
 
         ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
@@ -101,7 +103,8 @@ public class NetworkUtils {
             for (int i =0; i < resultsArray.length(); i++){
                 String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
                 int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
-                parsedMovieData.add(new Movie(jsonTitle,jsonID));
+                int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
+                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes));
             }
 
             return parsedMovieData;
