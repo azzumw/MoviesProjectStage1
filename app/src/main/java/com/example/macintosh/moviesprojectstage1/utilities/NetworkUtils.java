@@ -27,6 +27,7 @@ public class NetworkUtils {
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
 
     private static final String api_key_param = "api_key";
+    private static final String api_key_value = "51ed01ec1db0ac9a518638cb27934aec";
     private static final String LANGUAGE_PARAM = "language";
     private static final String EN_US = "en-US";
 
@@ -49,8 +50,8 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildUrl(String apikeyValue){
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(api_key_param,apikeyValue).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,SORTBY_POPULARITY).build();
+    public static URL buildUrl(String prefValue){
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(api_key_param,api_key_value).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
         URL  url = null;
 
         try {

@@ -1,8 +1,14 @@
 package com.example.macintosh.moviesprojectstage1;
 
+import android.app.Application;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -31,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
 
-    private final String API_KEY = "51ed01ec1db0ac9a518638cb27934aec";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadMovieData(){
-        new MoviesAsyncTask().execute(API_KEY);
+        SharedPreferences pref = PreferenceManager
+                .getDefaultSharedPreferences(getApplicationContext());
+        String END_POINT = pref.getString(getString(R.string.Pref_Key), "");
+        new MoviesAsyncTask().execute(END_POINT);
     }
 
     /**
@@ -93,9 +101,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected ArrayList<Movie> doInBackground(String... urls) {
-            String searchURL = urls[0];
+
+            final String searchURL = urls[0];
+
             URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
             mURLResults.setText(movieRequestURL.toString());
+
             String jsonResult = null;
             if(urls.length==0){
                 return null;

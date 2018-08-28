@@ -12,11 +12,12 @@
     </string-array>
 
     <string-array name="listArrayValues">
-        <item>1</item>
-        <item>2</item>
+        <item>popularity.desc</item>
+        <item>vote_count.desc</item>
     </string-array>
 
     <string name="popularity_string">Popularity</string>
 
     <string name="rated_string">Highest-Rated</string>
+    <string name="Pref_Key">PreferenceKey</string>
 </resources>
