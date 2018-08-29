@@ -1,5 +1,7 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
@@ -114,7 +116,8 @@ public class NetworkUtils {
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.connect();
                     InputStream inputStream = httpURLConnection.getInputStream();
-                    parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,inputStream));
+                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                    parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,bitmap));
 
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

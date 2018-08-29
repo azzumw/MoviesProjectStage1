@@ -16,7 +16,7 @@ public class Movie {
     private String title;
     private int id;
     private int voteCount;
-    private InputStream imageUrl;
+    private Bitmap imageUrl;
 
 
     public Movie(String title){
@@ -33,7 +33,7 @@ public class Movie {
         this.voteCount = voteCount;
     }
 
-    public Movie(String title, int id, int voteCount, InputStream imageUrl) {
+    public Movie(String title, int id, int voteCount, Bitmap imageUrl) {
         this(title,id,voteCount);
         this.imageUrl = imageUrl;
     }
@@ -53,8 +53,8 @@ public class Movie {
     public Bitmap getImage(){
 
 
-        Bitmap bmp = BitmapFactory.decodeStream(imageUrl);
+//        Bitmap bmp = BitmapFactory.decodeStream(imageUrl);
 
-        return bmp;
+        return imageUrl;
     }
 }
