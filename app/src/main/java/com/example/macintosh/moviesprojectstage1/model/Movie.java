@@ -3,6 +3,10 @@ package com.example.macintosh.moviesprojectstage1.model;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Created by macintosh on 27/08/2018.
  */
@@ -12,7 +16,7 @@ public class Movie {
     private String title;
     private int id;
     private int voteCount;
-    private String imageUrl;
+    private InputStream imageUrl;
 
 
     public Movie(String title){
@@ -29,7 +33,7 @@ public class Movie {
         this.voteCount = voteCount;
     }
 
-    public Movie(String title, int id, int voteCount, String imageUrl) {
+    public Movie(String title, int id, int voteCount, InputStream imageUrl) {
         this(title,id,voteCount);
         this.imageUrl = imageUrl;
     }
@@ -47,7 +51,10 @@ public class Movie {
     }
 
     public Bitmap getImage(){
-        Bitmap bmp = BitmapFactory.decodeFile(imageUrl);
+
+
+        Bitmap bmp = BitmapFactory.decodeStream(imageUrl);
+
         return bmp;
     }
 }

@@ -94,7 +94,8 @@ public class NetworkUtils {
         final String TITLE_KEY = "title";
         final String ID_KEY= "id";
         final String VOTE_COUNT_KEY= "vote_count";
-        final String IMAGE_URL = "poster_path";
+        final String POSTER_PATH = "poster_path";
+        final String IMAGE_URL = "http://image.tmdb.org/t/p/w500";
 
         ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
@@ -105,9 +106,22 @@ public class NetworkUtils {
                 String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
                 int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
                 int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
-                String image_path = resultsArray.getJSONObject(i).optString(IMAGE_URL);
-                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,image_path));
+                String jsonimage_path = resultsArray.getJSONObject(i).optString(POSTER_PATH);
+                String finalJsonImagePath = IMAGE_URL+ jsonimage_path;
+                URL url = null;
+                try {
+                    url = new URL(finalJsonImagePath);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.connect();
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,inputStream));
 
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                 catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
             return parsedMovieData;
