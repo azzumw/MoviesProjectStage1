@@ -94,6 +94,7 @@ public class NetworkUtils {
         final String TITLE_KEY = "title";
         final String ID_KEY= "id";
         final String VOTE_COUNT_KEY= "vote_count";
+        final String IMAGE_URL = "poster_path";
 
         ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
@@ -104,7 +105,9 @@ public class NetworkUtils {
                 String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
                 int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
                 int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
-                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes));
+                String image_path = resultsArray.getJSONObject(i).optString(IMAGE_URL);
+                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,image_path));
+
             }
 
             return parsedMovieData;

@@ -1,12 +1,14 @@
 package com.example.macintosh.moviesprojectstage1;
 
 import android.content.Context;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
@@ -35,6 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         holder.mMovieTextView.setText(movieArrayList.get(position).getTitle());
+        holder.mMoviePoster.setImageBitmap(movieArrayList.get(position).getImage());
     }
 
     @Override
@@ -51,10 +54,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public class MovieViewHolder extends RecyclerView.ViewHolder{
 
         TextView mMovieTextView;
+        ImageView mMoviePoster;
 
         public MovieViewHolder(View itemView){
             super(itemView);
             this.mMovieTextView = itemView.findViewById(R.id.tv_item);
+            this.mMoviePoster = itemView.findViewById(R.id.poster);
         }
 
     }
