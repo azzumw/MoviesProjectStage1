@@ -36,7 +36,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        holder.mMovieTextView.setText(movieArrayList.get(position).getTitle());
+//        holder.mMovieTextView.setText(movieArrayList.get(position).getTitle());
         holder.mMoviePoster.setImageBitmap(movieArrayList.get(position).getImage());
     }
 
@@ -58,7 +58,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         public MovieViewHolder(View itemView){
             super(itemView);
-            this.mMovieTextView = itemView.findViewById(R.id.tv_item);
+//            this.mMovieTextView = itemView.findViewById(R.id.tv_item);
             this.mMoviePoster = itemView.findViewById(R.id.poster);
         }
 

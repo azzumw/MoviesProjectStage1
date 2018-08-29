@@ -1,11 +1,7 @@
 package com.example.macintosh.moviesprojectstage1.model;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by macintosh on 27/08/2018.
@@ -51,9 +47,6 @@ public class Movie {
     }
 
     public Bitmap getImage(){
-
-
-//        Bitmap bmp = BitmapFactory.decodeStream(imageUrl);
 
         return imageUrl;
     }
