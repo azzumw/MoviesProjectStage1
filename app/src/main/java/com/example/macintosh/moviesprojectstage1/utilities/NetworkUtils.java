@@ -96,8 +96,11 @@ public class NetworkUtils {
         final String TITLE_KEY = "title";
         final String ID_KEY= "id";
         final String VOTE_COUNT_KEY= "vote_count";
+        final String VOTE_AVG_KEY = "vote_average";
         final String POSTER_PATH = "poster_path";
         final String IMAGE_URL = "http://image.tmdb.org/t/p/w500";
+        final String RELEASE_DATE_KEY = "release_date";
+        final String PLOT_SYNOPSIS_KEY = "overview";
 
         ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
@@ -108,23 +111,12 @@ public class NetworkUtils {
                 String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
                 int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
                 int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
+                int vote_average = resultsArray.getJSONObject(i).getInt(VOTE_AVG_KEY);
+                String release_date = resultsArray.getJSONObject(i).optString(RELEASE_DATE_KEY);
+                String plot_synopsis = resultsArray.getJSONObject(i).optString(PLOT_SYNOPSIS_KEY);
                 String jsonimage_path = resultsArray.getJSONObject(i).optString(POSTER_PATH);
                 String finalJsonImagePath = IMAGE_URL+ jsonimage_path;
-                URL url = null;
-                try {
-                    url = new URL(finalJsonImagePath);
-                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                    httpURLConnection.connect();
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                    parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,bitmap));
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                 catch (IOException e) {
-                    e.printStackTrace();
-                }
+                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,finalJsonImagePath,release_date,vote_average,plot_synopsis));
             }
 
             return parsedMovieData;

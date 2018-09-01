@@ -20,4 +20,9 @@
 
     <string name="rated_string">Highest-Rated</string>
     <string name="Pref_Key">PreferenceKey</string>
+    <string name="releasedtext">Released:</string>
+    <string name="plot_avgText">Plot Average:</string>
+    <string name="overviewText">Overview:</string>
+    <string name="titleText">Title</string>
+    <string name="plot_synopsis_text">Plot Synopsis</string>
 </resources>

@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this,getApplicationContext());
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -114,11 +114,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
+
+
     @Override
     public void onClickHandler(Movie movie) {
         Class detailActivityClass = DetailActivity.class;
 
-        startActivity(new Intent(this,detailActivityClass));
+        Intent intent = new Intent(this,detailActivityClass);
+
+        String title = movie.getTitle();
+        int id = movie.getid();
+        int voteCount = movie.getVoteCount();
+        String imageUrl = movie.getImage();
+        String plotSynopsis = movie.getPlotSynopsis();
+        int plotAverage = movie.getPlotAverage();
+        String releaseDate = movie.getReleaseDate();
+
+        intent.putExtra("title", title);
+        intent.putExtra("id",id);
+        intent.putExtra("image",imageUrl);
+        intent.putExtra("releaseDate",releaseDate);
+        intent.putExtra("plotSynopsis",plotSynopsis);
+        intent.putExtra("plotAverage",plotAverage);
+
+        startActivity(intent);
+
+
     }
 
     public class MoviesAsyncTask extends AsyncTask<String,Void,ArrayList<Movie>>{

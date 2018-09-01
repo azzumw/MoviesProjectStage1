@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private ArrayList<Movie> movieArrayList ;
+    private Context mContext;
 
     private final MovieAdapterOnClickHandler mMovieAdapterOnClickHandler;
 
@@ -30,8 +32,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void onClickHandler(Movie movie);
     }
 
-    public MovieAdapter(MovieAdapterOnClickHandler movieAdapterOnClickHandler){
+    public MovieAdapter(MovieAdapterOnClickHandler movieAdapterOnClickHandler, Context context){
         mMovieAdapterOnClickHandler = movieAdapterOnClickHandler;
+        mContext = context;
     }
 
     @NonNull
@@ -48,7 +51,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
 //        holder.mMovieTextView.setText(movieArrayList.get(position).getTitle());
-        holder.mMoviePoster.setImageBitmap(movieArrayList.get(position).getImage());
+        Movie currentMovie = movieArrayList.get(position);
+        String imageUrl = currentMovie.getImage();
+//        holder.mMoviePoster.(movieArrayList.get(position).getImage());
+        Picasso.with(mContext).load(imageUrl).into(holder.mMoviePoster);
     }
 
     @Override

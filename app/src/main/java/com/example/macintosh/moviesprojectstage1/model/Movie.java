@@ -1,18 +1,21 @@
 package com.example.macintosh.moviesprojectstage1.model;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 
 /**
  * Created by macintosh on 27/08/2018.
  */
 
-public class Movie {
+public class Movie{
 
     private String title;
     private int id;
     private int voteCount;
-    private Bitmap imageUrl;
+    private String imageUrl;
+//    private String imageurl;
     private String plotSynopsis;
     private int plotAverage;
     private String releaseDate;
@@ -31,10 +34,26 @@ public class Movie {
         this.voteCount = voteCount;
     }
 
-    public Movie(String title, int id, int voteCount, Bitmap imageUrl) {
+    public Movie(String title, int id, int voteCount, String imageUrl) {
         this(title,id,voteCount);
         this.imageUrl = imageUrl;
     }
+
+    public Movie(String title, int id, int voteCount, String imageUrl, String releaseDate){
+        this(title,id,voteCount,imageUrl);
+        this.releaseDate = releaseDate;
+    }
+
+    public Movie(String title, int id, int voteCount, String imageUrl, String releaseDate, int plotAverage){
+        this(title,id,voteCount,imageUrl,releaseDate);
+        this.plotAverage = plotAverage;
+    }
+
+    public Movie(String title, int id, int voteCount, String imageUrl, String releaseDate, int plotAverage, String plotSynopsis){
+        this(title,id,voteCount,imageUrl,releaseDate,plotAverage);
+        this.plotSynopsis = plotSynopsis;
+    }
+
 
     public String getTitle() {
         return title;
@@ -48,7 +67,7 @@ public class Movie {
         return voteCount;
     }
 
-    public Bitmap getImage(){
+    public String getImage(){
 
         return imageUrl;
     }
@@ -64,4 +83,6 @@ public class Movie {
     public String getReleaseDate() {
         return releaseDate;
     }
+
+
 }
