@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -32,7 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private TextView mURLResults;
     private TextView mSearchResults;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter = new MovieAdapter(this);
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -111,6 +112,13 @@ public class MainActivity extends AppCompatActivity {
             default:return true;
         }
 
+    }
+
+    @Override
+    public void onClickHandler(Movie movie) {
+        Class detailActivityClass = DetailActivity.class;
+
+        startActivity(new Intent(this,detailActivityClass));
     }
 
     public class MoviesAsyncTask extends AsyncTask<String,Void,ArrayList<Movie>>{

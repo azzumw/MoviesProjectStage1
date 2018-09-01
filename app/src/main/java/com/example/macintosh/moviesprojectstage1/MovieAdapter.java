@@ -1,6 +1,7 @@
 package com.example.macintosh.moviesprojectstage1;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +23,16 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private ArrayList<Movie> movieArrayList ;
+
+    private final MovieAdapterOnClickHandler mMovieAdapterOnClickHandler;
+
+    public interface MovieAdapterOnClickHandler {
+        void onClickHandler(Movie movie);
+    }
+
+    public MovieAdapter(MovieAdapterOnClickHandler movieAdapterOnClickHandler){
+        mMovieAdapterOnClickHandler = movieAdapterOnClickHandler;
+    }
 
     @NonNull
     @Override
@@ -51,7 +62,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView mMovieTextView;
         ImageView mMoviePoster;
@@ -60,7 +71,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             super(itemView);
 //            this.mMovieTextView = itemView.findViewById(R.id.tv_item);
             this.mMoviePoster = itemView.findViewById(R.id.poster);
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            int adapterPosition = getAdapterPosition();
+            Movie movie = movieArrayList.get(adapterPosition);
+            mMovieAdapterOnClickHandler.onClickHandler(movie);
+        }
     }
 }

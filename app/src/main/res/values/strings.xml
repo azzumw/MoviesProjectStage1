@@ -2,10 +2,10 @@
     <string name="app_name">MoviesProjectStage1</string>
     <string name="sort_by_menu_title">Sort By</string>
     <string name="error_message">Failed to get results. Please try again!</string>
-    
+
     <string name="sort_menu_title">Sort</string>
     <string name="title_sort_pref">Sort By</string>
-    
+
     <string-array name="listArrayTitles">
         <item>@string/popularity_string</item>
         <item>@string/rated_string</item>
