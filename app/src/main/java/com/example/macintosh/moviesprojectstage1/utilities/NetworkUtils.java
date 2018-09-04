@@ -1,6 +1,7 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
 
@@ -26,7 +27,8 @@ public class NetworkUtils {
     private static final String EN_US = "en-US";
     private static final String PARAM_SORT = "sort_by";
 
-    public static URL buildUrl(String prefValue){
+    public static URL buildUrl(String prefValue)  {
+
         Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_KEY_PARAM, API_KEY_VALUE).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
         URL  url = null;
 
@@ -37,6 +39,7 @@ public class NetworkUtils {
         }
 
         return url;
+
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

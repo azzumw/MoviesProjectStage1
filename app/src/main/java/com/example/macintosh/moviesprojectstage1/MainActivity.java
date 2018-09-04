@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
+import com.example.macintosh.moviesprojectstage1.utilities.InvalidApiKeyException;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
@@ -146,7 +147,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             final String searchURL = urls[0];
 
-            URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
+            URL movieRequestURL = null;
+
+                movieRequestURL = NetworkUtils.buildUrl(searchURL);
 
 
             String jsonResult;
