@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import java.util.prefs.PreferenceChangeListener;
 
 public class PreferenceSortActivity extends AppCompatActivity {
 

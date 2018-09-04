@@ -1,26 +1,18 @@
 package com.example.macintosh.moviesprojectstage1;
 
-import android.app.Application;
-import android.content.ComponentName;
-import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
+
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,8 +27,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private TextView mURLResults;
-    private TextView mSearchResults;
+
     private TextView mErrorMessagetv;
 
     private ProgressBar progressBar;
@@ -48,8 +39,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //mURLResults = findViewById(R.id.tv__url_result);
-//        mSearchResults = findViewById(R.id.tv_search_results);
+
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.rv_main_act);
@@ -159,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             URL movieRequestURL = NetworkUtils.buildUrl(searchURL);
 
 
-            String jsonResult = null;
+            String jsonResult;
             if(urls.length==0){
                 return null;
             }
@@ -167,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             try {
                 jsonResult = NetworkUtils.getResponseFromHttpUrl(movieRequestURL);
 
-                 ArrayList<Movie> simpleJsonMovieData = NetworkUtils.getJSONData(jsonResult);
+                ArrayList<Movie> simpleJsonMovieData = NetworkUtils.getJSONData(jsonResult);
 
 
                 return simpleJsonMovieData;

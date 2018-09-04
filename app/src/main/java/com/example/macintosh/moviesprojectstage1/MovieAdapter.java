@@ -1,26 +1,15 @@
 package com.example.macintosh.moviesprojectstage1;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
-
 import com.example.macintosh.moviesprojectstage1.model.Movie;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by macintosh on 28/08/2018.
- */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
     private ArrayList<Movie> movieArrayList ;
@@ -50,10 +39,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-//        holder.mMovieTextView.setText(movieArrayList.get(position).getTitle());
         Movie currentMovie = movieArrayList.get(position);
         String imageUrl = currentMovie.getImage();
-//        holder.mMoviePoster.(movieArrayList.get(position).getImage());
         Picasso.with(mContext).load(imageUrl).into(holder.mMoviePoster);
     }
 
@@ -70,12 +57,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView mMovieTextView;
         ImageView mMoviePoster;
 
         public MovieViewHolder(View itemView){
             super(itemView);
-//            this.mMovieTextView = itemView.findViewById(R.id.tv_item);
             this.mMoviePoster = itemView.findViewById(R.id.poster);
             itemView.setOnClickListener(this);
         }

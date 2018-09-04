@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
     tools:context="com.example.macintosh.moviesprojectstage1.DetailActivity">
 
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
-
-    <ImageView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/posterId"/>
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/tvTitle"
-        android:hint="@string/titleText"
-        android:textSize="30sp"
-        style="@style/textSyling"
-        android:textAllCaps="true"
-        android:layout_below="@+id/posterId"/>
+        android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvReleaseDateKey"
-        android:hint="@string/releasedtext"
-        android:textSize="16sp"
-        style="@style/textSyling"
-        android:layout_below="@id/tvTitle" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/releaseDateValue"
-        android:hint="01-01-90"
-        style="@style/textSyling"
-        android:textSize="14sp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_toRightOf="@id/tvReleaseDateKey"
-        android:layout_toEndOf="@id/tvReleaseDateKey"
-        android:layout_below="@id/tvTitle"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/posterId"
+            android:contentDescription=""/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvPlotAvgKey"
-        android:text="@string/plot_avgText"
-        android:textSize="14sp"
-        style="@style/textSyling"
-        android:layout_below="@id/tvReleaseDateKey"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvTitle"
+            android:hint="@string/titleText"
+            android:textSize="30sp"
+            style="@style/textSyling"
+            android:textAllCaps="true"
+            android:layout_below="@+id/posterId"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/plotAvgValue"
-        android:hint="01-01-90"
-        style="@style/textSyling"
-        android:textSize="14sp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_toRightOf="@id/tvPlotAvgKey"
-        android:layout_toEndOf="@id/tvPlotAvgKey"
-        android:layout_below="@id/releaseDateValue"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvReleaseDateKey"
+            android:hint="@string/releasedtext"
+            android:textSize="16sp"
+            style="@style/textSyling"
+            android:layout_below="@id/tvTitle" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/releaseDateValue"
+            android:hint="01-01-90"
+            style="@style/textSyling"
+            android:textSize="14sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toRightOf="@id/tvReleaseDateKey"
+            android:layout_toEndOf="@id/tvReleaseDateKey"
+            android:layout_below="@id/tvTitle"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvPlotSynopsisKey"
-        android:text="@string/overviewText"
-        android:textSize="14sp"
-        style="@style/textSyling"
-        android:layout_below="@id/tvPlotAvgKey" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPlotAvgKey"
+            android:text="@string/plot_avgText"
+            android:textSize="14sp"
+            style="@style/textSyling"
+            android:layout_below="@id/tvReleaseDateKey"
+            />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvPlotSynopsisValue"
-        style="@style/textSyling"
-        android:textSize="14sp"
-        android:hint="@string/plot_synopsis_text"
-        android:layout_toRightOf="@id/tvPlotSynopsisKey"
-        android:layout_below="@id/plotAvgValue"
-        android:layout_toEndOf="@id/tvPlotSynopsisKey"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/plotAvgValue"
+            android:hint="@string/dummy_date_text"
+            style="@style/textSyling"
+            android:textSize="14sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toRightOf="@id/tvPlotAvgKey"
+            android:layout_toEndOf="@id/tvPlotAvgKey"
+            android:layout_below="@id/releaseDateValue"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPlotSynopsisKey"
+            android:text="@string/overviewText"
+            android:textSize="14sp"
+            style="@style/textSyling"
+            android:layout_below="@id/tvPlotAvgKey" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPlotSynopsisValue"
+            style="@style/textSyling"
+            android:textSize="14sp"
+            android:hint="@string/plot_synopsis_text"
+            android:layout_toRightOf="@id/tvPlotSynopsisKey"
+            android:layout_below="@id/plotAvgValue"
+            android:layout_toEndOf="@id/tvPlotSynopsisKey"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"/>
 
 
-</RelativeLayout>
+    </RelativeLayout>
 
 
 

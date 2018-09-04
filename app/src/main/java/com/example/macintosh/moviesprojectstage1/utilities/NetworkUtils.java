@@ -1,7 +1,5 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
@@ -16,42 +14,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by macintosh on 26/08/2018.
- */
-
 public class NetworkUtils {
-    //private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?api_key=51ed01ec1db0ac9a518638cb27934aec";
+
     private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
 
     private static final String API_KEY_PARAM = "api_key";
     private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
-
-
     private static final String LANGUAGE_PARAM = "language";
     private static final String EN_US = "en-US";
-
     private static final String PARAM_SORT = "sort_by";
-    private static final String SORTBY_POPULARITY = "popularity.desc";
-
-    private static final String PARAM_KEYWORD = "with_keywords";
-
-
-    public static URL buildUrl(){
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,SORTBY_POPULARITY).build();
-        URL  url = null;
-
-        try {
-            url = new URL(uri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        return url;
-    }
 
     public static URL buildUrl(String prefValue){
         Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_KEY_PARAM, API_KEY_VALUE).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
@@ -65,7 +38,6 @@ public class NetworkUtils {
 
         return url;
     }
-
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         //down cast the URLConnection object returned by openConnection()  it to its subclass type HttpURLconnection.
@@ -104,27 +76,23 @@ public class NetworkUtils {
 
         ArrayList<Movie> parsedMovieData  = new ArrayList<>();
 
-            JSONObject rootJsonObject = new JSONObject(jsonString);
-            JSONArray resultsArray = rootJsonObject.getJSONArray(RESULTS_KEY);
+        JSONObject rootJsonObject = new JSONObject(jsonString);
+        JSONArray resultsArray = rootJsonObject.getJSONArray(RESULTS_KEY);
 
-            for (int i =0; i < resultsArray.length(); i++){
-                String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
-                int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
-                int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
-                int vote_average = resultsArray.getJSONObject(i).getInt(VOTE_AVG_KEY);
-                String release_date = resultsArray.getJSONObject(i).optString(RELEASE_DATE_KEY);
-                String plot_synopsis = resultsArray.getJSONObject(i).optString(PLOT_SYNOPSIS_KEY);
-                String jsonimage_path = resultsArray.getJSONObject(i).optString(POSTER_PATH);
-                String finalJsonImagePath = IMAGE_URL+ jsonimage_path;
-                parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,finalJsonImagePath,release_date,vote_average,plot_synopsis));
-            }
+        for (int i =0; i < resultsArray.length(); i++){
+            String jsonTitle = resultsArray.getJSONObject(i).optString(TITLE_KEY);
+            int jsonID = resultsArray.getJSONObject(i).getInt(ID_KEY);
+            int votes = resultsArray.getJSONObject(i).getInt(VOTE_COUNT_KEY);
+            int vote_average = resultsArray.getJSONObject(i).getInt(VOTE_AVG_KEY);
+            String release_date = resultsArray.getJSONObject(i).optString(RELEASE_DATE_KEY);
+            String plot_synopsis = resultsArray.getJSONObject(i).optString(PLOT_SYNOPSIS_KEY);
+            String jsonimage_path = resultsArray.getJSONObject(i).optString(POSTER_PATH);
+            String finalJsonImagePath = IMAGE_URL+ jsonimage_path;
+            parsedMovieData.add(new Movie(jsonTitle,jsonID,votes,finalJsonImagePath,release_date,vote_average,plot_synopsis));
+        }
 
-            return parsedMovieData;
+        return parsedMovieData;
 
     }
 
-    public static String getQueryParam(){
-        List<String> param = Uri.parse("https://api.themoviedb.org/3/discover/movie?api_key=51ed01ec1db0ac9a518638cb27934aec&language=en-US&sort_by=popularity.desc").getPathSegments();
-        return param.toString();
-    }
 }

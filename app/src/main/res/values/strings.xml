@@ -25,4 +25,5 @@
     <string name="overviewText">Overview:</string>
     <string name="titleText">Title</string>
     <string name="plot_synopsis_text">Plot Synopsis</string>
+    <string name="dummy_date_text">01-01-90</string>
 </resources>
