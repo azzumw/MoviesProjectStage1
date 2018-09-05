@@ -23,7 +23,12 @@ public class PreferenceSortActivity extends AppCompatActivity {
         @Override
         public void onCreate(@Nullable Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            // This static call will reset default values only on the first ever read
+
+
             addPreferencesFromResource(R.xml.pref_main);
+
+            PreferenceManager.setDefaultValues(getContext(), R.xml.pref_main, false);
 
             Preference sortby_pref_value = findPreference(getString(R.string.Pref_Key));
 
@@ -33,7 +38,7 @@ public class PreferenceSortActivity extends AppCompatActivity {
         private void bindPreferenceSummaryToValue(Preference preference) {
             preference.setOnPreferenceChangeListener(this);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-            String preferenceString = preferences.getString(preference.getKey(), "");
+            String preferenceString = preferences.getString(preference.getKey(),"");
             onPreferenceChange(preference, preferenceString);
         }
 

@@ -12,8 +12,8 @@
     </string-array>
 
     <string-array name="listArrayValues">
-        <item>popularity.desc</item>
-        <item>vote_count.desc</item>
+        <item>@string/popular</item>
+        <item>@string/toprated</item>
     </string-array>
 
     <string name="popularity_string">Popularity</string>
@@ -26,4 +26,6 @@
     <string name="titleText">Title</string>
     <string name="plot_synopsis_text">Plot Synopsis</string>
     <string name="dummy_date_text">01-01-90</string>
+    <string name="popular">popular</string>
+    <string name="toprated">top_rated</string>
 </resources>

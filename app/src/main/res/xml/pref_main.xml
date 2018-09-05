@@ -4,12 +4,10 @@
 
 
         <ListPreference android:title="@string/sort_by_menu_title"
-            android:defaultValue="1"
+            android:defaultValue="@string/popular"
             android:key="@string/Pref_Key"
             android:entries="@array/listArrayTitles"
             android:entryValues="@array/listArrayValues"
             android:selectable="true"/>
-
-
 
 </PreferenceScreen>

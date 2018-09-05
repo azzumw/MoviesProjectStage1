@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
-import com.example.macintosh.moviesprojectstage1.utilities.InvalidApiKeyException;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
@@ -68,7 +67,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         SharedPreferences pref = PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext());
-        String END_POINT = pref.getString(getString(R.string.Pref_Key), "");
+
+        String END_POINT = pref.getString(getString(R.string.Pref_Key),getString(R.string.popular));
 
 
         new MoviesAsyncTask().execute(END_POINT);

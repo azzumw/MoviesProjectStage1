@@ -1,6 +1,7 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
 import android.net.Uri;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.macintosh.moviesprojectstage1.model.Movie;
@@ -19,17 +20,19 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    private static final String BASE_URL = "https://api.themoviedb.org/3/discover/movie?";
+    private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
 
     private static final String API_KEY_PARAM = "api_key";
-    private static final String API_KEY_VALUE = "";  //<--- insert your key here!
+    private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
     private static final String LANGUAGE_PARAM = "language";
     private static final String EN_US = "en-US";
     private static final String PARAM_SORT = "sort_by";
 
     public static URL buildUrl(String prefValue)  {
 
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendQueryParameter(API_KEY_PARAM, API_KEY_VALUE).appendQueryParameter(LANGUAGE_PARAM,EN_US).appendQueryParameter(PARAM_SORT,prefValue).build();
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(prefValue).appendQueryParameter(API_KEY_PARAM,API_KEY_VALUE).build();
+
+        Log.v("URI BUILT: ",uri.toString());
         URL  url = null;
 
         try {
