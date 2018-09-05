@@ -2,14 +2,10 @@ package com.example.macintosh.moviesprojectstage1.utilities;
 
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.example.macintosh.moviesprojectstage1.model.Movie;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,10 +19,7 @@ public class NetworkUtils {
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
 
     private static final String API_KEY_PARAM = "api_key";
-    private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
-    private static final String LANGUAGE_PARAM = "language";
-    private static final String EN_US = "en-US";
-    private static final String PARAM_SORT = "sort_by";
+    private static final String API_KEY_VALUE = "";  //<--- insert your key here!
 
     public static URL buildUrl(String prefValue)  {
 
