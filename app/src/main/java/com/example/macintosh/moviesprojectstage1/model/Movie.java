@@ -1,41 +1,55 @@
 package com.example.macintosh.moviesprojectstage1.model;
 
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
+@Entity
 public class Movie{
 
-    private String title;
+    @PrimaryKey
     private int id;
+    private String title;
     private int voteCount;
     private String imageUrl;
     private String plotSynopsis;
     private int plotAverage;
     private String releaseDate;
+
+    @Ignore
     private Boolean isFavourite = false;
 
+    @Ignore
     private Movie(String title){
         this.title = title;
     }
 
+    @Ignore
     private Movie(String title, int id){
         this(title);
         this.id=id;
     }
 
+    @Ignore
     private Movie(String title,int id, int voteCount){
         this(title,id);
         this.voteCount = voteCount;
     }
 
+    @Ignore
     private Movie(String title, int id, int voteCount, String imageUrl) {
         this(title,id,voteCount);
         this.imageUrl = imageUrl;
     }
 
+    @Ignore
     private Movie(String title, int id, int voteCount, String imageUrl, String releaseDate){
         this(title,id,voteCount,imageUrl);
         this.releaseDate = releaseDate;
     }
 
+    @Ignore
     private Movie(String title, int id, int voteCount, String imageUrl, String releaseDate, int plotAverage){
         this(title,id,voteCount,imageUrl,releaseDate);
         this.plotAverage = plotAverage;
