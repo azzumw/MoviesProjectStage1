@@ -4,9 +4,11 @@ package com.example.macintosh.moviesprojectstage1.database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "movie")
-public class Movie{
+public class Movie implements Parcelable{
 
     @PrimaryKey
     private int id;
@@ -60,6 +62,30 @@ public class Movie{
         this.plotSynopsis = plotSynopsis;
     }
 
+    protected Movie(Parcel in) {
+        id = in.readInt();
+        title = in.readString();
+        voteCount = in.readInt();
+        imageUrl = in.readString();
+        plotSynopsis = in.readString();
+        plotAverage = in.readInt();
+        releaseDate = in.readString();
+        byte tmpIsFavourite = in.readByte();
+        isFavourite = tmpIsFavourite == 0 ? null : tmpIsFavourite == 1;
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
     public Boolean getFavourite() {
         return isFavourite;
     }
@@ -72,7 +98,7 @@ public class Movie{
         return title;
     }
 
-    public int getid() {
+    public int getId() {
         return id;
     }
 
@@ -80,7 +106,7 @@ public class Movie{
         return voteCount;
     }
 
-    public String getImage(){
+    public String getImageUrl(){
 
         return imageUrl;
     }
@@ -98,4 +124,20 @@ public class Movie{
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(title);
+        dest.writeInt(voteCount);
+        dest.writeString(imageUrl);
+        dest.writeString(plotSynopsis);
+        dest.writeInt(plotAverage);
+        dest.writeString(releaseDate);
+        dest.writeByte((byte) (isFavourite == null ? 0 : isFavourite ? 1 : 2));
+    }
 }

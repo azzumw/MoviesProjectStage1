@@ -3,15 +3,21 @@ package com.example.macintosh.moviesprojectstage1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
+import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
 
 
 
 public class DetailActivity extends AppCompatActivity {
 
+    private ImageButton favouriteImageButton;
+    private AppDatabase mDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,20 +40,38 @@ public class DetailActivity extends AppCompatActivity {
         tvReleaseDateValue = findViewById(R.id.releaseDateValue);
         tvPlotVotes = findViewById(R.id.plotAvgValue);
         posterView = findViewById(R.id.posterId);
+        favouriteImageButton = findViewById(R.id.favouriteBtnId);
 
         Intent intent = getIntent();
-        String title = intent.getStringExtra(TITLE_KEY);
+        Movie movie = intent.getParcelableExtra("Movie");
 
-        String imageUrl = intent.getStringExtra(IMAGE_KEY);
-        String plotSynopsis = intent.getStringExtra(PLOT_SYN_KEY);
-        int plotAverage = intent.getIntExtra(PLOT_AVG_KEY,0);
-        String releaseDate = intent.getStringExtra(RELEASE_DATE_KEY);
+        String title = movie.getTitle();
+        String imageUrl = movie.getImageUrl();
+        String plotSynopsis = movie.getPlotSynopsis();
+        int plotAverage = movie.getPlotAverage();
+        String releaseDate = movie.getReleaseDate();
+//        String title = intent.getStringExtra(TITLE_KEY);
+//        String imageUrl = intent.getStringExtra(IMAGE_KEY);
+//        Log.d(DetailActivity.class.getCanonicalName(),imageUrl);
+//        String plotSynopsis = intent.getStringExtra(PLOT_SYN_KEY);
+//        int plotAverage = intent.getIntExtra(PLOT_AVG_KEY,0);
+//        String releaseDate = intent.getStringExtra(RELEASE_DATE_KEY);
 
         Picasso.with(this).load(imageUrl).into(posterView);
         tvTitleValue.setText(title);
         tvReleaseDateValue.setText(releaseDate);
         tvPlotVotes.setText(String.valueOf(plotAverage));
         tvPlotSynopsis.setText(plotSynopsis);
+
+        mDb = AppDatabase.getsInstance(this);
+    }
+
+    public void onFavouriteButtonClicked(){
+        //check if this movie object isFavourite.
+        //if no, set isFavourite  = true;
+        //else, set isFavourite = false;
+
+
     }
 
 
