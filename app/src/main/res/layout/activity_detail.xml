@@ -13,8 +13,10 @@
         android:padding="10dp">
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="200dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:id="@+id/posterId"
             android:contentDescription=""/>
 
@@ -27,6 +29,13 @@
             style="@style/textSyling"
             android:textAllCaps="true"
             android:layout_below="@+id/posterId"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/baseline_favorite_border_black_18dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true" />
 
         <TextView
             android:layout_width="wrap_content"

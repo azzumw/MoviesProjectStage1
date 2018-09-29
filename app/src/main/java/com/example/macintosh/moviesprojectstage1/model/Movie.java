@@ -10,6 +10,7 @@ public class Movie{
     private String plotSynopsis;
     private int plotAverage;
     private String releaseDate;
+    private Boolean isFavourite = false;
 
     private Movie(String title){
         this.title = title;
@@ -45,6 +46,13 @@ public class Movie{
         this.plotSynopsis = plotSynopsis;
     }
 
+    public Boolean getFavourite() {
+        return isFavourite;
+    }
+
+    public void setIsFavourite(Boolean favourite){
+        this.isFavourite = favourite;
+    }
 
     public String getTitle() {
         return title;
