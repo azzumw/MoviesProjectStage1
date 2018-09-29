@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.example.macintosh.moviesprojectstage1.model.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 

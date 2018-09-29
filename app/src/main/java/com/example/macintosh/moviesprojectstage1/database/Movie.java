@@ -1,11 +1,11 @@
-package com.example.macintosh.moviesprojectstage1.model;
+package com.example.macintosh.moviesprojectstage1.database;
 
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity
+@Entity(tableName = "movie")
 public class Movie{
 
     @PrimaryKey

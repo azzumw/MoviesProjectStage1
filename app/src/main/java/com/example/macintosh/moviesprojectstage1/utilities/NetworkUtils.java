@@ -2,7 +2,7 @@ package com.example.macintosh.moviesprojectstage1.utilities;
 
 import android.net.Uri;
 import android.util.Log;
-import com.example.macintosh.moviesprojectstage1.model.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
