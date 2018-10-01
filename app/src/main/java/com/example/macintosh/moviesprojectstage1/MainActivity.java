@@ -130,25 +130,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         Intent intent = new Intent(this,detailActivityClass);
 
-//        String title = movie.getTitle();
-//        int id = movie.getId();
-//        int voteCount = movie.getVoteCount();
-//        String imageUrl = movie.getImageUrl();
-//        String plotSynopsis = movie.getPlotSynopsis();
-//        int plotAverage = movie.getPlotAverage();
-//        String releaseDate = movie.getReleaseDate();
-//
-//        intent.putExtra("title", title);
-//        intent.putExtra("id",id);
-//        intent.putExtra("image",imageUrl);
-//        intent.putExtra("releaseDate",releaseDate);
-//        intent.putExtra("plotSynopsis",plotSynopsis);
-//        intent.putExtra("plotAverage",plotAverage);
-
         intent.putExtra("Movie",movie);
         startActivity(intent);
-
-
     }
 
     @NonNull

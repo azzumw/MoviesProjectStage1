@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
@@ -43,7 +45,7 @@ public class DetailActivity extends AppCompatActivity {
         favouriteImageButton = findViewById(R.id.favouriteBtnId);
 
         Intent intent = getIntent();
-        Movie movie = intent.getParcelableExtra("Movie");
+        final Movie movie = intent.getParcelableExtra("Movie");
 
         String title = movie.getTitle();
         String imageUrl = movie.getImageUrl();
@@ -64,14 +66,39 @@ public class DetailActivity extends AppCompatActivity {
         tvPlotSynopsis.setText(plotSynopsis);
 
         mDb = AppDatabase.getsInstance(this);
+
+        favouriteImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFavouriteButtonClicked(movie);
+            }
+        });
+
+
     }
 
-    public void onFavouriteButtonClicked(){
+    public void onFavouriteButtonClicked(Movie movie){
         //check if this movie object isFavourite.
         //if no, set isFavourite  = true;
         //else, set isFavourite = false;
 
+        if(movie.getFavourite()){
+            //set isFavourite = false;
+            //remove from database
+            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
+            movie.setIsFavourite(false);
+            Toast.makeText(this, "Removed from Favourites", Toast.LENGTH_SHORT).show();
+            mDb.movieDao().deleteMovie(movie);
 
+        }
+        else{
+            //set isFavourite = true
+            //add to database
+            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
+            movie.setIsFavourite(true);
+            mDb.movieDao().insertMovie(movie);
+            Toast.makeText(this, "Added to Favourites", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

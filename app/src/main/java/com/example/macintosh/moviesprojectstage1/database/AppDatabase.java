@@ -28,5 +28,5 @@ public abstract class AppDatabase extends RoomDatabase {
         return sInstance;
     }
 
-    abstract MovieDao movieDao();
+   public abstract MovieDao movieDao();
 }
