@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.Menu;
@@ -19,15 +20,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
+import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
 
@@ -38,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ProgressBar progressBar;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
+
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
+
+    AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = findViewById(R.id.rv_main_act);
 
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
+        gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -60,11 +72,70 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mRecyclerView.setAdapter(mMovieAdapter);
 
+        mDb = AppDatabase.getsInstance(getApplicationContext());
 
-        loadMovieData();
+//        loadMovieData();
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+
+        String sharedPreference = getSharedPreferenceValue();
+
+        if(sharedPreference.equals(getString(R.string.favourites))){
+            //database
+            AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+
+                    final ArrayList<Movie> movieList = (ArrayList<Movie>)mDb.movieDao().loadAllFavouriteMovies();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            mMovieAdapter.setMovieData(movieList);
+                        }
+                    });
+
+                }
+            });
+
+        }else {
+            //network
+            final URL searchURL = NetworkUtils.buildUrl(sharedPreference);
+
+            final String[] httpResponse = new String[1];
+            AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                ArrayList<Movie> movieArrayList = NetworkUtils.getJSONData(httpResponse[0]);
+                                mMovieAdapter.setMovieData(movieArrayList);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+                }
+            });
+
+
+        }
+    }
 
     private void loadMovieData(){
 
@@ -134,6 +205,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intent);
     }
 
+    private String getSharedPreferenceValue(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String END_POINT = sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
+        return END_POINT;
+    }
+
+
+
+
+
     @NonNull
     @Override
     public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
@@ -166,24 +247,40 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             @Override
             public ArrayList<Movie> loadInBackground() {
 
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                String END_POINT = getSharedPreferenceValue();
 
-                String END_POINT = sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
+                if(END_POINT.equals(getString(R.string.favourites))){
+                    mRecyclerView.setLayoutManager(linearLayoutManager);
+                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            movieArrayList = (ArrayList<Movie>) AppDatabase.getsInstance(MainActivity.this).movieDao().loadAllFavouriteMovies();
+                        }
+                    });
 
-                URL searchURL = NetworkUtils.buildUrl(END_POINT);
-
-                try {
-                    String httpResponse = NetworkUtils.getResponseFromHttpUrl(searchURL);
-
-                    movieArrayList = NetworkUtils.getJSONData(httpResponse);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException je){
-                    je.printStackTrace();
+                    //                    Intent intent = new Intent(MainActivity.this,FavouritesActivity.class);
+//                    startActivity(intent);
                 }
+
+                else{
+                    mRecyclerView.setLayoutManager(gridLayoutManager);
+                    URL searchURL = NetworkUtils.buildUrl(END_POINT);
+
+                    try {
+                        String httpResponse = NetworkUtils.getResponseFromHttpUrl(searchURL);
+
+                        movieArrayList = NetworkUtils.getJSONData(httpResponse);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException je){
+                        je.printStackTrace();
+                    }
 //                movieArrayList.add(new Movie("Dilbar",567,567,"http://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg","releasedate",89,"description"));
+
+                }
                 return movieArrayList;
+
             }
         };
     }
@@ -205,22 +302,4 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
-
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        get the current preference
-//        SharedPreferences pref = PreferenceManager
-//                .getDefaultSharedPreferences(getApplicationContext());
-//
-//        String END_POINT = pref.getString(getString(R.string.Pref_Key),getString(R.string.popular));
-//        URL url = NetworkUtils.buildUrl(END_POINT);
-//        String stringUrl = url.toString();
-//
-//
-//        put it in the state bundle
-//        outState.putString(URL_KEY,stringUrl);
-
-
-//    }
 }

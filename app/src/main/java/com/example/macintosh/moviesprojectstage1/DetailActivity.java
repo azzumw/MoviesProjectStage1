@@ -11,9 +11,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
+import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class DetailActivity extends AppCompatActivity {
@@ -31,11 +35,6 @@ public class DetailActivity extends AppCompatActivity {
         TextView tvPlotSynopsis;
         ImageView posterView;
 
-        final String PLOT_SYN_KEY = "plotSynopsis";
-        final String RELEASE_DATE_KEY = "releaseDate";
-        final String TITLE_KEY = "title";
-        final String IMAGE_KEY =  "image";
-        final String PLOT_AVG_KEY = "plotAverage";
 
         tvPlotSynopsis = findViewById(R.id.tvPlotSynopsisValue);
         tvTitleValue = findViewById(R.id.tvTitle);
@@ -52,12 +51,6 @@ public class DetailActivity extends AppCompatActivity {
         String plotSynopsis = movie.getPlotSynopsis();
         int plotAverage = movie.getPlotAverage();
         String releaseDate = movie.getReleaseDate();
-//        String title = intent.getStringExtra(TITLE_KEY);
-//        String imageUrl = intent.getStringExtra(IMAGE_KEY);
-//        Log.d(DetailActivity.class.getCanonicalName(),imageUrl);
-//        String plotSynopsis = intent.getStringExtra(PLOT_SYN_KEY);
-//        int plotAverage = intent.getIntExtra(PLOT_AVG_KEY,0);
-//        String releaseDate = intent.getStringExtra(RELEASE_DATE_KEY);
 
         Picasso.with(this).load(imageUrl).into(posterView);
         tvTitleValue.setText(title);
@@ -66,6 +59,17 @@ public class DetailActivity extends AppCompatActivity {
         tvPlotSynopsis.setText(plotSynopsis);
 
         mDb = AppDatabase.getsInstance(this);
+        Log.e("Detail Activity: ",movie.toString());
+
+        if(checkIfIdmatches(movie.getId())){
+            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
+            movie.setIsFavourite(true);
+
+        }else{
+            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
+            movie.setIsFavourite(false);
+        }
+
 
         favouriteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +78,47 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
-    public void onFavouriteButtonClicked(Movie movie){
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private boolean checkIfIdmatches(final int id){
+        final int[] numberOfRowsInTable = new int[1];
+        final int[] movieId = new int[1];
+
+        numberOfRowsInTable[0] = mDb.movieDao().getRowCount();
+
+        int numRows = numberOfRowsInTable[0];
+
+        if(numRows==0) {
+            Log.e("Detail Activity",numRows+" " + numberOfRowsInTable[0]);
+            return false;
+        }
+
+        else{
+
+            Log.e("Detail Activity",numRows+" " + numberOfRowsInTable[0]);
+            Movie movieFromDb = mDb.movieDao().getMovieById(id);
+            if(movieFromDb == null) {
+                return false;
+            }
+
+            movieId[0] = movieFromDb.getId();
+
+            if(movieId[0] == id){
+                return true;
+            }
+            else {
+                Log.e("DetailActivity: ","final else");
+                return false;
+            }
+        }
+    }
+
+    public void onFavouriteButtonClicked(final Movie movie){
         //check if this movie object isFavourite.
         //if no, set isFavourite  = true;
         //else, set isFavourite = false;
@@ -86,20 +127,41 @@ public class DetailActivity extends AppCompatActivity {
             //set isFavourite = false;
             //remove from database
             favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
+            Log.v("DetailActivity","Favourtie set to true: "+ movie.toString());
             movie.setIsFavourite(false);
-            Toast.makeText(this, "Removed from Favourites", Toast.LENGTH_SHORT).show();
-            mDb.movieDao().deleteMovie(movie);
+
+            AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().deleteMovie(movie);
+                }
+            });
+            Log.v("DetailActivity",movie.toString());
+            Toast.makeText(DetailActivity.this, "Removed from Favourites", Toast.LENGTH_SHORT).show();
+
 
         }
         else{
             //set isFavourite = true
             //add to database
             favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
+            Log.v("DetailActivity","Favourtie set to default false: "+ movie.toString());
             movie.setIsFavourite(true);
-            mDb.movieDao().insertMovie(movie);
-            Toast.makeText(this, "Added to Favourites", Toast.LENGTH_SHORT).show();
+
+
+            AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().insertMovie(movie);
+
+                }
+            });
+
+            Toast.makeText(DetailActivity.this, "Added to Favourites", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 
 }
