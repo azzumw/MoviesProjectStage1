@@ -1,5 +1,8 @@
 package com.example.macintosh.moviesprojectstage1;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -24,19 +27,11 @@ public class FavouritesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+        LiveData<List<Movie>> movies = AppDatabase.getsInstance(FavouritesActivity.this).movieDao().loadAllFavouriteMovies();
+        movies.observe(this, new Observer<List<Movie>>() {
             @Override
-            public void run() {
-                final List<Movie> movies = AppDatabase.getsInstance(FavouritesActivity.this).movieDao().loadAllFavouriteMovies();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(!movies.isEmpty()){
-                            textView.setText(movies.get(0).getId() + movies.get(0).getTitle());
-                        }
-
-                    }
-                });
+            public void onChanged(@Nullable List<Movie> movies) {
+                textView.setText(movies.get(0).getId() + movies.get(0).getTitle());
             }
         });
     }

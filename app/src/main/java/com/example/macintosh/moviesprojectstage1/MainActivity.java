@@ -1,8 +1,11 @@
 package com.example.macintosh.moviesprojectstage1;
 
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +18,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,9 +39,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private final static int LOADER_ID = 11;
+    private Parcelable mListState;
+    private final String PARCEL_KEY = "ListState";
     private final String URL_KEY = "URL_KEY";
     private TextView mErrorMessagetv;
 
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mMovieAdapter;
 
     private GridLayoutManager gridLayoutManager;
-    private LinearLayoutManager linearLayoutManager;
+
 
     AppDatabase mDb;
 
@@ -55,14 +60,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        Log.e("OncREATE","Activity created");
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.rv_main_act);
 
 
         gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
-        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -70,11 +74,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mMovieAdapter = new MovieAdapter(this,getApplicationContext());
 
-        mRecyclerView.setAdapter(mMovieAdapter);
-
         mDb = AppDatabase.getsInstance(getApplicationContext());
+        loadMovieData();
 
-//        loadMovieData();
 
     }
 
@@ -83,26 +85,51 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onResume();
 
 
+        if(mListState!=null){
+            Log.e("OnResume", "Retreiving State..");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+        }
+        mRecyclerView.setAdapter(mMovieAdapter);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e("OnSaveInstanceState", "Saving State..");
+        mListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(PARCEL_KEY,mListState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState!=null){
+            Log.e("OnRestoreInstanceState", "Restoring State..");
+            mListState = savedInstanceState.getParcelable(PARCEL_KEY);
+        }
+    }
+
+    private void loadMovieData(){
+
+        showJsonDataView();
 
         String sharedPreference = getSharedPreferenceValue();
 
         if(sharedPreference.equals(getString(R.string.favourites))){
+
+
             //database
-            AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            final LiveData<List<Movie>> movieList = mDb.movieDao().loadAllFavouriteMovies();
+            movieList.observe(this, new Observer<List<Movie>>() {
                 @Override
-                public void run() {
+                public void onChanged(@Nullable List<Movie> movies) {
+                    Log.e("MainACTIVITY: ", "Receving database update from LIVEDATA");
 
-                    final ArrayList<Movie> movieList = (ArrayList<Movie>)mDb.movieDao().loadAllFavouriteMovies();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            mMovieAdapter.setMovieData(movieList);
-                        }
-                    });
-
+                    mMovieAdapter.setMovieData(movies);
                 }
             });
+
 
         }else {
             //network
@@ -135,30 +162,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
         }
-    }
-
-    private void loadMovieData(){
-
-        showJsonDataView();
-
-//        SharedPreferences pref = PreferenceManager
-//                .getDefaultSharedPreferences(getApplicationContext());
-//
-//        String END_POINT = pref.getString(getString(R.string.Pref_Key),getString(R.string.popular));
-
-
-        //new MoviesAsyncTask().execute(END_POINT);
-
-        LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(LOADER_ID);
-
-        if(movieLoader==null){
-            loaderManager.initLoader(LOADER_ID,null,this).forceLoad();
-        }else{
-            loaderManager.restartLoader(LOADER_ID,null,this);
-        }
-
-
 
     }
 
@@ -209,97 +212,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String END_POINT = sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
         return END_POINT;
-    }
-
-
-
-
-
-    @NonNull
-    @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
-        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
-
-            ArrayList<Movie>  movieArrayList = null;
-
-            @Override
-            protected void onStartLoading() {
-
-
-                if (args != null) {
-                    deliverResult(movieArrayList);
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    /*Force an asynchronous load. Unlike startLoading() this will ignore
-                    a previously loaded data set and load a new one. This simply calls through to the implementation's onForceLoad().
-                    You generally should only call this when the loader is started -- that is, isStarted() returns true.*/
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable ArrayList<Movie> data) {
-                super.deliverResult(data);
-                movieArrayList = data;
-            }
-
-            @Nullable
-            @Override
-            public ArrayList<Movie> loadInBackground() {
-
-                String END_POINT = getSharedPreferenceValue();
-
-                if(END_POINT.equals(getString(R.string.favourites))){
-                    mRecyclerView.setLayoutManager(linearLayoutManager);
-                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            movieArrayList = (ArrayList<Movie>) AppDatabase.getsInstance(MainActivity.this).movieDao().loadAllFavouriteMovies();
-                        }
-                    });
-
-                    //                    Intent intent = new Intent(MainActivity.this,FavouritesActivity.class);
-//                    startActivity(intent);
-                }
-
-                else{
-                    mRecyclerView.setLayoutManager(gridLayoutManager);
-                    URL searchURL = NetworkUtils.buildUrl(END_POINT);
-
-                    try {
-                        String httpResponse = NetworkUtils.getResponseFromHttpUrl(searchURL);
-
-                        movieArrayList = NetworkUtils.getJSONData(httpResponse);
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException je){
-                        je.printStackTrace();
-                    }
-//                movieArrayList.add(new Movie("Dilbar",567,567,"http://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg","releasedate",89,"description"));
-
-                }
-                return movieArrayList;
-
-            }
-        };
-    }
-
-    @Override
-    public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        progressBar.setVisibility(View.INVISIBLE);
-
-        if (data == null) {
-            showErrorMessage();
-        } else {
-            mMovieAdapter.setMovieData(data);
-            showJsonDataView();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
-
     }
 
 }

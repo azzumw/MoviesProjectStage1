@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
-import java.util.ArrayList;
+
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private ArrayList<Movie> movieArrayList ;
+    private List<Movie> movieList;
     private Context mContext;
+    MovieViewHolder movieViewHolder;
 
     private final MovieAdapterOnClickHandler mMovieAdapterOnClickHandler;
 
@@ -32,26 +34,30 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         int layoutIDforListItem = R.layout.list_item;
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(layoutIDforListItem,parent,false);
-        MovieViewHolder movieViewHolder = new MovieViewHolder(view);
+        movieViewHolder = new MovieViewHolder(view);
 
         return movieViewHolder;
     }
 
+    public int getPosition(){
+        return movieViewHolder.getAdapterPosition();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        Movie currentMovie = movieArrayList.get(position);
+        Movie currentMovie = movieList.get(position);
         String imageUrl = currentMovie.getImageUrl();
         Picasso.with(mContext).load(imageUrl).into(holder.mMoviePoster);
     }
 
     @Override
     public int getItemCount() {
-        if(movieArrayList ==null) return 0;
-        return movieArrayList.size();
+        if(movieList ==null) return 0;
+        return movieList.size();
     }
 
-    public void setMovieData(ArrayList<Movie> movieList){
-        movieArrayList = movieList;
+    public void setMovieData(List<Movie> list){
+        movieList = list;
         notifyDataSetChanged();
     }
 
@@ -65,10 +71,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             itemView.setOnClickListener(this);
         }
 
+        public int getPostion(){
+            return getAdapterPosition();
+        }
+
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            Movie movie = movieArrayList.get(adapterPosition);
+            Movie movie = movieList.get(adapterPosition);
             mMovieAdapterOnClickHandler.onClickHandler(movie);
         }
     }

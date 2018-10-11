@@ -1,5 +1,6 @@
 package com.example.macintosh.moviesprojectstage1;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,26 +23,20 @@ import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
+
+    private TextView tvReleaseDateValue;
+    private TextView tvTitleValue;
+    private TextView tvPlotVotes;
+    private TextView tvPlotSynopsis;
+    private ImageView posterView;
+
     private ImageButton favouriteImageButton;
     private AppDatabase mDb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        TextView tvReleaseDateValue;
-        TextView tvTitleValue;
-        TextView tvPlotVotes;
-        TextView tvPlotSynopsis;
-        ImageView posterView;
-
-
-        tvPlotSynopsis = findViewById(R.id.tvPlotSynopsisValue);
-        tvTitleValue = findViewById(R.id.tvTitle);
-        tvReleaseDateValue = findViewById(R.id.releaseDateValue);
-        tvPlotVotes = findViewById(R.id.plotAvgValue);
-        posterView = findViewById(R.id.posterId);
-        favouriteImageButton = findViewById(R.id.favouriteBtnId);
+        assignViews();
 
         Intent intent = getIntent();
         final Movie movie = intent.getParcelableExtra("Movie");
@@ -52,11 +47,7 @@ public class DetailActivity extends AppCompatActivity {
         int plotAverage = movie.getPlotAverage();
         String releaseDate = movie.getReleaseDate();
 
-        Picasso.with(this).load(imageUrl).into(posterView);
-        tvTitleValue.setText(title);
-        tvReleaseDateValue.setText(releaseDate);
-        tvPlotVotes.setText(String.valueOf(plotAverage));
-        tvPlotSynopsis.setText(plotSynopsis);
+        setupViews(title,imageUrl,plotSynopsis,plotAverage,releaseDate);
 
         mDb = AppDatabase.getsInstance(this);
         Log.e("Detail Activity: ",movie.toString());
@@ -80,35 +71,33 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
-    private boolean checkIfIdmatches(final int id){
-        final int[] numberOfRowsInTable = new int[1];
-        final int[] movieId = new int[1];
+    public boolean checkIfIdmatches(final int id){
 
-        numberOfRowsInTable[0] = mDb.movieDao().getRowCount();
 
-        int numRows = numberOfRowsInTable[0];
 
-        if(numRows==0) {
-            Log.e("Detail Activity",numRows+" " + numberOfRowsInTable[0]);
+        int num = mDb.movieDao().getRowCount();
+
+//        int numRows = numberOfRowsInTable[0];
+
+        if(num==0) {
+            Log.e("Detail Activity",num+" " + num);
             return false;
         }
 
         else{
 
-            Log.e("Detail Activity",numRows+" " + numberOfRowsInTable[0]);
+            Log.e("Detail Activity",num+ " " + num);
+
+
             Movie movieFromDb = mDb.movieDao().getMovieById(id);
             if(movieFromDb == null) {
                 return false;
             }
 
-            movieId[0] = movieFromDb.getId();
+            int movieId = movieFromDb.getId();
 
-            if(movieId[0] == id){
+            if(movieId == id){
                 return true;
             }
             else {
@@ -162,6 +151,22 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    private void assignViews(){
+        tvPlotSynopsis = findViewById(R.id.tvPlotSynopsisValue);
+        tvTitleValue = findViewById(R.id.tvTitle);
+        tvReleaseDateValue = findViewById(R.id.releaseDateValue);
+        tvPlotVotes = findViewById(R.id.plotAvgValue);
+        posterView = findViewById(R.id.posterId);
+        favouriteImageButton = findViewById(R.id.favouriteBtnId);
+    }
+
+    private void setupViews(String title,String img, String plotsyn, int plotAvg, String relDate){
+        Picasso.with(this).load(img).into(posterView);
+        tvTitleValue.setText(title);
+        tvReleaseDateValue.setText(relDate);
+        tvPlotVotes.setText(String.valueOf(plotAvg));
+        tvPlotSynopsis.setText(plotsyn);
+    }
 
 
 }
