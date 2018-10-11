@@ -3,6 +3,8 @@ package com.example.macintosh.moviesprojectstage1;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
@@ -76,21 +78,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
         loadMovieData();
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-
-        if(mListState!=null){
-            Log.e("OnResume", "Retreiving State..");
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
-        }
         mRecyclerView.setAdapter(mMovieAdapter);
-
     }
 
     @Override
@@ -120,16 +113,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
             //database
-            final LiveData<List<Movie>> movieList = mDb.movieDao().loadAllFavouriteMovies();
-            movieList.observe(this, new Observer<List<Movie>>() {
+//            final LiveData<List<Movie>> movieList = mDb.movieDao().loadAllFavouriteMovies();
+            MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+            viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
                 @Override
                 public void onChanged(@Nullable List<Movie> movies) {
                     Log.e("MainACTIVITY: ", "Receving database update from LIVEDATA");
-
-                    mMovieAdapter.setMovieData(movies);
+                    setMovies(movies);
                 }
             });
-
 
         }else {
             //network
@@ -149,8 +141,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                         @Override
                         public void run() {
                             try {
-                                ArrayList<Movie> movieArrayList = NetworkUtils.getJSONData(httpResponse[0]);
-                                mMovieAdapter.setMovieData(movieArrayList);
+                                List<Movie> movies = NetworkUtils.getJSONData(httpResponse[0]);
+                                setMovies(movies);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -159,10 +151,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 }
             });
-
-
         }
+    }
 
+    private void setMovies(List<Movie> movies) {
+        mMovieAdapter.setMovieData(movies);
+
+        if(mListState!=null){
+            Log.e("OnResume", "Retreiving State..");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+        }
     }
 
     /**
@@ -195,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
 
     }
-
-
 
     @Override
     public void onClickHandler(Movie movie) {

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
@@ -17,6 +18,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
+        Log.e("MainViewModel", "Activiely retreiving movies rom the database");
          movies = AppDatabase.getsInstance(this.getApplication()).movieDao().loadAllFavouriteMovies();
     }
 

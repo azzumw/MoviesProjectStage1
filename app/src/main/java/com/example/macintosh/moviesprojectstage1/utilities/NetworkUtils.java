@@ -3,6 +3,8 @@ package com.example.macintosh.moviesprojectstage1.utilities;
 import android.net.Uri;
 import android.util.Log;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Trailer;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,14 +12,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NetworkUtils {
 
-    private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
+//    www.youtube.com/watch?v=MDR3bfmzV8c&feature=youtu.be
 
+    private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
+    private static final String VIDEO_STR = "videos";
     private static final String API_KEY_PARAM = "api_key";
     private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
 
@@ -36,6 +41,22 @@ public class NetworkUtils {
 
         return url;
 
+    }
+
+    public static URL buildUrl(int id){
+        String id_toString = String.valueOf(id);
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(id_toString).appendPath(VIDEO_STR).appendQueryParameter(API_KEY_PARAM,API_KEY_VALUE).build();
+
+        Log.v("URI BUILT: ",uri.toString());
+        URL  url = null;
+
+        try {
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
@@ -92,6 +113,28 @@ public class NetworkUtils {
 
         return parsedMovieData;
 
+    }
+
+    public static void getJSONTrailerData(String jsonString) throws JSONException {
+
+        final String RESULTS_KEY = "results";
+        final String ID_KEY = "id";
+        final String TRAILER_NAME_KEY = "name";
+        final String VIDEO_KEY = "key";
+        final String VIDEO_TYPE = "type";
+
+        ArrayList<Trailer> parseTrailerData = new ArrayList<>();
+
+        JSONObject jsonRootObj = new JSONObject(jsonString);
+        JSONArray resultsArray = jsonRootObj.getJSONArray(RESULTS_KEY);
+
+        for(int i=0; i<resultsArray.length();i++){
+            int id = resultsArray.getJSONObject(i).getInt(ID_KEY);
+            String nameofTrailer = resultsArray.getJSONObject(i).getString(TRAILER_NAME_KEY);
+            String videokey = resultsArray.getJSONObject(i).getString(VIDEO_KEY);
+            String videoType = resultsArray.getJSONObject(i).getString(VIDEO_TYPE);
+            parseTrailerData.add(new Trailer(id,nameofTrailer,videokey,videoType));
+        }
     }
 
 }
