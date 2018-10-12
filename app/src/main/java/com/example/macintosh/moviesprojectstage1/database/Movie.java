@@ -21,8 +21,6 @@ public class Movie implements Parcelable{
     private int plotAverage;
     private String releaseDate;
 
-
-
     @Ignore
     private Boolean isFavourite = false;
 

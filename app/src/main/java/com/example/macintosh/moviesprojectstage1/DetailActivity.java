@@ -1,9 +1,8 @@
 package com.example.macintosh.moviesprojectstage1;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -16,13 +15,8 @@ import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 
 public class DetailActivity extends AppCompatActivity {
-
 
     private TextView tvReleaseDateValue;
     private TextView tvTitleValue;
@@ -32,6 +26,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private ImageButton favouriteImageButton;
     private AppDatabase mDb;
+
+    private Movie movie;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +36,7 @@ public class DetailActivity extends AppCompatActivity {
         assignViews();
 
         Intent intent = getIntent();
-        final Movie movie = intent.getParcelableExtra("Movie");
+        movie = intent.getParcelableExtra("Movie");
 
         String title = movie.getTitle();
         String imageUrl = movie.getImageUrl();
@@ -52,15 +49,7 @@ public class DetailActivity extends AppCompatActivity {
         mDb = AppDatabase.getsInstance(this);
         Log.e("Detail Activity: ",movie.toString());
 
-        if(checkIfIdmatches(movie.getId())){
-            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
-            movie.setIsFavourite(true);
-
-        }else{
-            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
-            movie.setIsFavourite(false);
-        }
-
+        setFavouriteState(movie.getId());
 
         favouriteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,42 +58,49 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        // make network request to get the video links
+
     }
 
 
-    public boolean checkIfIdmatches(final int id){
+    public void setFavouriteState(final int id){
 
+        AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+            @Override
+            public void run() {
 
+                Movie movieFromDb = mDb.movieDao().getMovieById(id);
 
-        int num = mDb.movieDao().getRowCount();
+                if (movieFromDb == null) {
+                    movie.setIsFavourite(false);
+                } else {
+                    int movieId = movieFromDb.getId();
 
-//        int numRows = numberOfRowsInTable[0];
+                    if (movieId == id) {
+                        movie.setIsFavourite(true);
+                    } else {
+                        Log.e("DetailActivity: ", "final else");
+                        movie.setIsFavourite(false);
+                    }
+                }
 
-        if(num==0) {
-            Log.e("Detail Activity",num+" " + num);
-            return false;
-        }
-
-        else{
-
-            Log.e("Detail Activity",num+ " " + num);
-
-
-            Movie movieFromDb = mDb.movieDao().getMovieById(id);
-            if(movieFromDb == null) {
-                return false;
+                updateFavouriteImage();
             }
+        });
+    }
 
-            int movieId = movieFromDb.getId();
+    private void updateFavouriteImage() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(Boolean.TRUE.equals(movie.getFavourite())) {
+                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
+                } else {
+                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
+                }
 
-            if(movieId == id){
-                return true;
             }
-            else {
-                Log.e("DetailActivity: ","final else");
-                return false;
-            }
-        }
+        });
     }
 
     public void onFavouriteButtonClicked(final Movie movie){
@@ -115,7 +111,6 @@ public class DetailActivity extends AppCompatActivity {
         if(movie.getFavourite()){
             //set isFavourite = false;
             //remove from database
-            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
             Log.v("DetailActivity","Favourtie set to true: "+ movie.toString());
             movie.setIsFavourite(false);
 
@@ -133,10 +128,8 @@ public class DetailActivity extends AppCompatActivity {
         else{
             //set isFavourite = true
             //add to database
-            favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
             Log.v("DetailActivity","Favourtie set to default false: "+ movie.toString());
             movie.setIsFavourite(true);
-
 
             AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
                 @Override
@@ -148,6 +141,8 @@ public class DetailActivity extends AppCompatActivity {
 
             Toast.makeText(DetailActivity.this, "Added to Favourites", Toast.LENGTH_SHORT).show();
         }
+
+        updateFavouriteImage();
     }
 
 
@@ -166,6 +161,7 @@ public class DetailActivity extends AppCompatActivity {
         tvReleaseDateValue.setText(relDate);
         tvPlotVotes.setText(String.valueOf(plotAvg));
         tvPlotSynopsis.setText(plotsyn);
+        favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
     }
 
 
