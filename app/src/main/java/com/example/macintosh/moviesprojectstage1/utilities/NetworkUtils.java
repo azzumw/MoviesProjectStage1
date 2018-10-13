@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class NetworkUtils {
@@ -117,7 +118,7 @@ public class NetworkUtils {
 
     }
 
-    public static void getJSONTrailerData(String jsonString) throws JSONException {
+    public static List<Trailer> getJSONTrailerData(String jsonString) throws JSONException {
 
         final String RESULTS_KEY = "results";
         final String ID_KEY = "id";
@@ -131,12 +132,14 @@ public class NetworkUtils {
         JSONArray resultsArray = jsonRootObj.getJSONArray(RESULTS_KEY);
 
         for(int i=0; i<resultsArray.length();i++){
-            int id = resultsArray.getJSONObject(i).getInt(ID_KEY);
+            String id = resultsArray.getJSONObject(i).getString(ID_KEY);
             String nameofTrailer = resultsArray.getJSONObject(i).getString(TRAILER_NAME_KEY);
             String videokey = resultsArray.getJSONObject(i).getString(VIDEO_KEY);
             String videoType = resultsArray.getJSONObject(i).getString(VIDEO_TYPE);
             parseTrailerData.add(new Trailer(id,nameofTrailer,videokey,videoType));
         }
+
+        return parseTrailerData;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.macintosh.moviesprojectstage1;
 
 
+import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.custom_theme_color));
+
 
         Log.e("OncREATE","Activity created");
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
@@ -152,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 }
             });
         }
+
+        getSupportActionBar().setTitle(sharedPreference.substring(0,1).toUpperCase()+sharedPreference.substring(1));
     }
 
     private void setMovies(List<Movie> movies) {

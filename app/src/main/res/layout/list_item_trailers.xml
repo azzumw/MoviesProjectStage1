@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="88dp">
+
+
+    <ImageView
+        android:layout_width="88dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0"
+        android:src="@drawable/ytubefunky"
+        android:id="@+id/youtubeicon" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:id="@+id/list_itemTV"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:layout_gravity="center_vertical"
+        android:textAlignment="gravity"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textSize="24sp"
+        android:textColor="@color/crimson"
+        android:hint="@string/trailer_1_dummy_string"/>
+
+
+
+</LinearLayout>

@@ -1,8 +1,12 @@
 package com.example.macintosh.moviesprojectstage1;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,10 +17,18 @@ import android.widget.Toast;
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Trailer;
+import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 
-public class DetailActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+
+
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     private TextView tvReleaseDateValue;
     private TextView tvTitleValue;
@@ -28,11 +40,17 @@ public class DetailActivity extends AppCompatActivity {
     private AppDatabase mDb;
 
     private Movie movie;
+    private TrailerAdapter mTrailerAdapter;
+    private RecyclerView mRecyclerView;
+
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.custom_theme_color));
+
         assignViews();
 
         Intent intent = getIntent();
@@ -58,7 +76,19 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mRecyclerView.setHasFixedSize(true);
+
+        mTrailerAdapter = new TrailerAdapter(getApplicationContext(),this);
         // make network request to get the video links
+
+        mRecyclerView.setAdapter(mTrailerAdapter);
+
+        loadTrailers();
 
     }
 
@@ -94,9 +124,9 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if(Boolean.TRUE.equals(movie.getFavourite())) {
-                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
+                    favouriteImageButton.setImageResource(R.drawable.favplainheart);
                 } else {
-                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
+                    favouriteImageButton.setImageResource(R.drawable.translusentheartone);
                 }
 
             }
@@ -153,6 +183,7 @@ public class DetailActivity extends AppCompatActivity {
         tvPlotVotes = findViewById(R.id.plotAvgValue);
         posterView = findViewById(R.id.posterId);
         favouriteImageButton = findViewById(R.id.favouriteBtnId);
+        mRecyclerView = findViewById(R.id.rv_detailAct_trailerslist);
     }
 
     private void setupViews(String title,String img, String plotsyn, int plotAvg, String relDate){
@@ -164,5 +195,49 @@ public class DetailActivity extends AppCompatActivity {
         favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
     }
 
+    private void loadTrailers(){
 
+        int id = movie.getId();
+        final URL searchURL = NetworkUtils.buildUrl(id);
+
+        final String[] httpResponse = new String[1];
+        AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            List<Trailer> trailersList = NetworkUtils.getJSONTrailerData(httpResponse[0]);
+                            setTrailers(trailersList);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+
+
+    private void setTrailers(List<Trailer> trailers) {
+        mTrailerAdapter.setTrailerData(trailers);
+    }
+
+
+    @Override
+    public void onClickHandler(Trailer trailer) {
+
+        String videoId = trailer.getKey();
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+        intent.putExtra("VIDEO_ID", videoId);
+        startActivity(intent);
+    }
 }
