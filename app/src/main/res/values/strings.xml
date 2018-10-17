@@ -9,16 +9,20 @@
     <string-array name="listArrayTitles">
         <item>@string/popularity_string</item>
         <item>@string/rated_string</item>
+        <item>@string/favourites_string</item>>
     </string-array>
 
     <string-array name="listArrayValues">
         <item>@string/popular</item>
         <item>@string/toprated</item>
+        <item>@string/favourites</item>
     </string-array>
 
     <string name="popularity_string">Popularity</string>
-
     <string name="rated_string">Highest-Rated</string>
+    <string name="favourites_string">Favourites</string>
+
+
     <string name="Pref_Key">PreferenceKey</string>
     <string name="releasedtext">Released:</string>
     <string name="plot_avgText">Plot Average:</string>
@@ -26,6 +30,13 @@
     <string name="titleText">Title</string>
     <string name="plot_synopsis_text">Plot Synopsis</string>
     <string name="dummy_date_text">01-01-90</string>
+
     <string name="popular">popular</string>
     <string name="toprated">top_rated</string>
+    <string name="favourites">favourites</string>
+
+    <string name="space"> </string>
+    <string name="trailer_1_dummy_string">Trailer </string>
+    <string name="author_name_hint">Author Name</string>
+    <string name="example_review_hint">This is an example review. This is an example review.</string>
 </resources>

@@ -1,38 +1,45 @@
 package com.example.macintosh.moviesprojectstage1;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.Snackbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.macintosh.moviesprojectstage1.model.Movie;
+import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
+import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
+import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, LoaderManager.LoaderCallbacks<ArrayList<Movie>> {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private final static int LOADER_ID = 11;
+    private Parcelable mListState;
+    private final String PARCEL_KEY = "ListState";
     private final String URL_KEY = "URL_KEY";
     private TextView mErrorMessagetv;
 
@@ -40,18 +47,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
 
+    private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
+
+
+    protected AppDatabase mDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.custom_theme_color));
 
 
+        Log.e("OncREATE","Activity created");
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.rv_main_act);
 
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
+        gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -59,37 +75,108 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mMovieAdapter = new MovieAdapter(this,getApplicationContext());
 
-        mRecyclerView.setAdapter(mMovieAdapter);
-
-
-        loadMovieData();
+        mDb = AppDatabase.getsInstance(getApplicationContext());
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRecyclerView.setAdapter(mMovieAdapter);
+        if(checkConnection()){
+            loadMovieData();
+        }
+        else{
+            showErrorMessage();
+        }
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.e("OnSaveInstanceState", "Saving State..");
+        mListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(PARCEL_KEY,mListState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState!=null){
+            Log.e("OnRestoreInstanceState", "Restoring State..");
+            mListState = savedInstanceState.getParcelable(PARCEL_KEY);
+        }
+    }
 
     private void loadMovieData(){
 
-        showJsonDataView();
 
-//        SharedPreferences pref = PreferenceManager
-//                .getDefaultSharedPreferences(getApplicationContext());
-//
-//        String END_POINT = pref.getString(getString(R.string.Pref_Key),getString(R.string.popular));
+        String sharedPreference = getSharedPreferenceValue();
+
+        if(sharedPreference.equals(getString(R.string.favourites))){
 
 
-        //new MoviesAsyncTask().execute(END_POINT);
+            //database
+//            final LiveData<List<Movie>> movieList = mDb.movieDao().loadAllFavouriteMovies();
+            MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+            viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
+                @Override
+                public void onChanged(@Nullable List<Movie> movies) {
+                    Log.e("MainACTIVITY: ", "Receving database update from LIVEDATA");
+                    setMovies(movies);
+                }
+            });
 
-        LoaderManager loaderManager = getSupportLoaderManager();
-        Loader<ArrayList<Movie>> movieLoader = loaderManager.getLoader(LOADER_ID);
+        }else {
+            //network
+            final URL searchURL = NetworkUtils.buildUrl(sharedPreference);
 
-        if(movieLoader==null){
-            loaderManager.initLoader(LOADER_ID,null,this).forceLoad();
-        }else{
-            loaderManager.restartLoader(LOADER_ID,null,this);
+            final String[] httpResponse = new String[1];
+
+
+
+                AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
+                                    setMovies(movies);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    }
+                });
+
+
         }
 
+        getSupportActionBar().setTitle(sharedPreference.substring(0,1).toUpperCase()+sharedPreference.substring(1));
+    }
+
+    private void setMovies(List<Movie> movies) {
 
 
+        mMovieAdapter.setMovieData(movies);
+
+        if(mListState!=null){
+            Log.e("OnResume", "Retreiving State..");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
+        }
     }
 
     /**
@@ -123,121 +210,53 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
-
-
     @Override
     public void onClickHandler(Movie movie) {
         Class detailActivityClass = DetailActivity.class;
 
-        Intent intent = new Intent(this,detailActivityClass);
+        if(checkConnection()){
+            Intent intent = new Intent(this,detailActivityClass);
 
-        String title = movie.getTitle();
-        int id = movie.getid();
-        int voteCount = movie.getVoteCount();
-        String imageUrl = movie.getImage();
-        String plotSynopsis = movie.getPlotSynopsis();
-        int plotAverage = movie.getPlotAverage();
-        String releaseDate = movie.getReleaseDate();
-
-        intent.putExtra("title", title);
-        intent.putExtra("id",id);
-        intent.putExtra("image",imageUrl);
-        intent.putExtra("releaseDate",releaseDate);
-        intent.putExtra("plotSynopsis",plotSynopsis);
-        intent.putExtra("plotAverage",plotAverage);
-
-        startActivity(intent);
-
+            intent.putExtra("Movie",movie);
+            startActivity(intent);
+        }else{
+            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.ll_main_root),
+                    R.string.error_message, Snackbar.LENGTH_SHORT);
+            mySnackbar.show();
+        }
 
     }
 
-    @NonNull
-    @Override
-    public Loader<ArrayList<Movie>> onCreateLoader(int id, @Nullable final Bundle args) {
-        return new AsyncTaskLoader<ArrayList<Movie>>(this) {
-
-            ArrayList<Movie>  movieArrayList = null;
-
-            @Override
-            protected void onStartLoading() {
-
-
-                if (args != null) {
-                    deliverResult(movieArrayList);
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    /*Force an asynchronous load. Unlike startLoading() this will ignore
-                    a previously loaded data set and load a new one. This simply calls through to the implementation's onForceLoad().
-                    You generally should only call this when the loader is started -- that is, isStarted() returns true.*/
-                    forceLoad();
-                }
-            }
-
-            @Override
-            public void deliverResult(@Nullable ArrayList<Movie> data) {
-                super.deliverResult(data);
-                movieArrayList = data;
-            }
-
-            @Nullable
-            @Override
-            public ArrayList<Movie> loadInBackground() {
-
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-                String END_POINT = sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
-
-                URL searchURL = NetworkUtils.buildUrl(END_POINT);
-
-                try {
-                    String httpResponse = NetworkUtils.getResponseFromHttpUrl(searchURL);
-
-                    movieArrayList = NetworkUtils.getJSONData(httpResponse);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException je){
-                    je.printStackTrace();
-                }
-//                movieArrayList.add(new Movie("Dilbar",567,567,"http://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg","releasedate",89,"description"));
-                return movieArrayList;
-            }
-        };
+    private String getSharedPreferenceValue(){
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<ArrayList<Movie>> loader, ArrayList<Movie> data) {
-        progressBar.setVisibility(View.INVISIBLE);
-
-        if (data == null) {
-            showErrorMessage();
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
         } else {
-            mMovieAdapter.setMovieData(data);
-            showJsonDataView();
+            return false;
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<ArrayList<Movie>> loader) {
+    public boolean checkConnection(){
+        progressBar.setVisibility(View.VISIBLE);
 
+        if(isOnline()){
+//            Toast.makeText(MainActivity.this, "You are connected to Internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            showJsonDataView();
+            return true;
+        }else{
+//            Toast.makeText(MainActivity.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            showErrorMessage();
+            return false;
+        }
     }
 
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        get the current preference
-//        SharedPreferences pref = PreferenceManager
-//                .getDefaultSharedPreferences(getApplicationContext());
-//
-//        String END_POINT = pref.getString(getString(R.string.Pref_Key),getString(R.string.popular));
-//        URL url = NetworkUtils.buildUrl(END_POINT);
-//        String stringUrl = url.toString();
-//
-//
-//        put it in the state bundle
-//        outState.putString(URL_KEY,stringUrl);
-
-
-//    }
 }

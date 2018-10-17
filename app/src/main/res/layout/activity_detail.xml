@@ -1,41 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rootLinear"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:background="@color/crimson">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="88dp"
+            android:id="@+id/tvTitle"
+            android:hint="@string/titleText"
+            android:textSize="30sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            style="@style/textSyling"
+            android:layout_gravity="center"
+            android:textColor="#fff"
+            android:textAllCaps="true" />
+
+    </LinearLayout>
+
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_weight="5"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
+    android:layout_height="0dp"
     tools:context="com.example.macintosh.moviesprojectstage1.DetailActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
+
+
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_width="wrap_content"
+            android:layout_height="180dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:id="@+id/posterId"
+            android:layout_marginLeft="8dp"
             android:contentDescription=""/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvTitle"
-            android:hint="@string/titleText"
-            android:textSize="30sp"
-            style="@style/textSyling"
-            android:textAllCaps="true"
-            android:layout_below="@+id/posterId"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvReleaseDateKey"
-            android:hint="@string/releasedtext"
-            android:textSize="16sp"
-            style="@style/textSyling"
-            android:layout_below="@id/tvTitle" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,19 +61,9 @@
             android:textSize="14sp"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/tvReleaseDateKey"
-            android:layout_toEndOf="@id/tvReleaseDateKey"
-            android:layout_below="@id/tvTitle"/>
+            android:layout_toRightOf="@id/posterId"
+            android:layout_toEndOf="@id/posterId" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvPlotAvgKey"
-            android:text="@string/plot_avgText"
-            android:textSize="14sp"
-            style="@style/textSyling"
-            android:layout_below="@id/tvReleaseDateKey"
-            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -68,18 +74,21 @@
             android:textSize="14sp"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/tvPlotAvgKey"
-            android:layout_toEndOf="@id/tvPlotAvgKey"
+            android:layout_toRightOf="@id/posterId"
+            android:layout_toEndOf="@id/posterId"
             android:layout_below="@id/releaseDateValue"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvPlotSynopsisKey"
-            android:text="@string/overviewText"
-            android:textSize="14sp"
-            style="@style/textSyling"
-            android:layout_below="@id/tvPlotAvgKey" />
+        <ImageButton
+            android:id="@+id/favouriteBtnId"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_toRightOf="@id/posterId"
+            android:layout_toEndOf="@id/posterId"
+            android:layout_below="@id/plotAvgValue"
+            android:src="@drawable/favplainheart" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -87,17 +96,29 @@
             android:id="@+id/tvPlotSynopsisValue"
             style="@style/textSyling"
             android:textSize="14sp"
+            android:textColor="#fff"
             android:hint="@string/plot_synopsis_text"
-            android:layout_toRightOf="@id/tvPlotSynopsisKey"
-            android:layout_below="@id/plotAvgValue"
-            android:layout_toEndOf="@id/tvPlotSynopsisKey"
+            android:layout_below="@id/posterId"
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvPlotSynopsisValue"
+            android:layout_marginLeft="5dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tvPlotSynopsisValue"
+                android:id="@+id/rv_detailAct_trailerslist">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
 
 
     </RelativeLayout>
 
-
-
-
 </ScrollView>
+</LinearLayout>
