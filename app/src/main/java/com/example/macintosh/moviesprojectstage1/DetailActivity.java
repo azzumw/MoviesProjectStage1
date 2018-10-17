@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Review;
 import com.example.macintosh.moviesprojectstage1.database.Trailer;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -41,6 +42,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     private Movie movie;
     private TrailerAdapter mTrailerAdapter;
+    private ReviewAdapter mReviewAdapter;
     private RecyclerView mRecyclerView;
 
     private LinearLayoutManager linearLayoutManager;
@@ -84,6 +86,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         mRecyclerView.setHasFixedSize(true);
 
         mTrailerAdapter = new TrailerAdapter(getApplicationContext(),this);
+        mReviewAdapter = new ReviewAdapter();
         // make network request to get the video links
 
         mRecyclerView.setAdapter(mTrailerAdapter);
@@ -198,7 +201,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private void loadTrailers(){
 
         int id = movie.getId();
-        final URL searchURL = NetworkUtils.buildUrl(id);
+        final URL searchURL = NetworkUtils.buildUrl(id,EndPoints.VIDEOS.getType());
 
         final String[] httpResponse = new String[1];
         AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
@@ -226,9 +229,45 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         });
     }
 
+    private void loadReviews(){
+        int id = movie.getId();
+        final URL searchURL = NetworkUtils.buildUrl(id,EndPoints.REVIEWS.getType());
+
+        final String[] httpResponse = new String[1];
+        AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            List<Review> reviewList = NetworkUtils.getJSONReviewData(httpResponse[0]);
+                            setReviews(reviewList);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+
+
+
 
     private void setTrailers(List<Trailer> trailers) {
-        mTrailerAdapter.setTrailerData(trailers);
+            mTrailerAdapter.setTrailerData(trailers);
+    }
+
+    private void setReviews(List<Review> reviews){
+        mReviewAdapter.setmReviewData(reviews);
     }
 
 
@@ -240,4 +279,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         intent.putExtra("VIDEO_ID", videoId);
         startActivity(intent);
     }
+
+
 }

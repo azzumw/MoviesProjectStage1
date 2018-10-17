@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
+
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -39,9 +41,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return movieViewHolder;
     }
 
-    public int getPosition(){
-        return movieViewHolder.getAdapterPosition();
-    }
 
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
@@ -71,9 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             itemView.setOnClickListener(this);
         }
 
-        public int getPostion(){
-            return getAdapterPosition();
-        }
+
 
         @Override
         public void onClick(View view) {
@@ -82,4 +79,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             mMovieAdapterOnClickHandler.onClickHandler(movie);
         }
     }
+
+
 }

@@ -1,8 +1,10 @@
 package com.example.macintosh.moviesprojectstage1.database;
 
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,10 +17,18 @@ public class Movie implements Parcelable{
     @PrimaryKey
     private int id;
     private String title;
+
+    @Ignore
     private int voteCount;
+
+
+    @Ignore
     private String imageUrl;
+    @Ignore
     private String plotSynopsis;
+    @Ignore
     private int plotAverage;
+    @Ignore
     private String releaseDate;
 
     @Ignore
@@ -29,8 +39,8 @@ public class Movie implements Parcelable{
         this.title = title;
     }
 
-    @Ignore
-    private Movie(String title, int id){
+
+    public Movie(String title, int id){
         this(title);
         this.id=id;
     }
@@ -59,11 +69,13 @@ public class Movie implements Parcelable{
         this.plotAverage = plotAverage;
     }
 
+    @Ignore
     public Movie(String title, int id, int voteCount, String imageUrl, String releaseDate, int plotAverage, String plotSynopsis){
         this(title,id,voteCount,imageUrl,releaseDate,plotAverage);
         this.plotSynopsis = plotSynopsis;
     }
 
+    @Ignore
     protected Movie(Parcel in) {
         id = in.readInt();
         title = in.readString();

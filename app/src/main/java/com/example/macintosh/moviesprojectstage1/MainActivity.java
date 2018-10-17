@@ -1,25 +1,22 @@
 package com.example.macintosh.moviesprojectstage1;
 
 
-import android.app.Activity;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.Snackbar;
 
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
@@ -37,9 +33,7 @@ import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
@@ -54,9 +48,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private MovieAdapter mMovieAdapter;
 
     private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
 
 
-    AppDatabase mDb;
+    protected AppDatabase mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
 
         gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
+        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
@@ -80,13 +76,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieAdapter = new MovieAdapter(this,getApplicationContext());
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
-        loadMovieData();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mRecyclerView.setAdapter(mMovieAdapter);
+        if(checkConnection()){
+            loadMovieData();
+        }
+        else{
+            showErrorMessage();
+        }
+
     }
 
     @Override
@@ -108,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private void loadMovieData(){
 
-        showJsonDataView();
 
         String sharedPreference = getSharedPreferenceValue();
 
@@ -131,35 +133,44 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             final URL searchURL = NetworkUtils.buildUrl(sharedPreference);
 
             final String[] httpResponse = new String[1];
-            AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                List<Movie> movies = NetworkUtils.getJSONData(httpResponse[0]);
-                                setMovies(movies);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+
+
+                AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
 
-                }
-            });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
+                                    setMovies(movies);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    }
+                });
+
+
         }
 
         getSupportActionBar().setTitle(sharedPreference.substring(0,1).toUpperCase()+sharedPreference.substring(1));
     }
 
     private void setMovies(List<Movie> movies) {
+
+
         mMovieAdapter.setMovieData(movies);
 
         if(mListState!=null){
@@ -203,16 +214,49 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void onClickHandler(Movie movie) {
         Class detailActivityClass = DetailActivity.class;
 
-        Intent intent = new Intent(this,detailActivityClass);
+        if(checkConnection()){
+            Intent intent = new Intent(this,detailActivityClass);
 
-        intent.putExtra("Movie",movie);
-        startActivity(intent);
+            intent.putExtra("Movie",movie);
+            startActivity(intent);
+        }else{
+            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.ll_main_root),
+                    R.string.error_message, Snackbar.LENGTH_SHORT);
+            mySnackbar.show();
+        }
+
     }
 
     private String getSharedPreferenceValue(){
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String END_POINT = sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
-        return END_POINT;
+        return sharedPreferences.getString(getString(R.string.Pref_Key),getString(R.string.popular));
     }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean checkConnection(){
+        progressBar.setVisibility(View.VISIBLE);
+
+        if(isOnline()){
+//            Toast.makeText(MainActivity.this, "You are connected to Internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            showJsonDataView();
+            return true;
+        }else{
+//            Toast.makeText(MainActivity.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.INVISIBLE);
+            showErrorMessage();
+            return false;
+        }
+    }
+
 
 }

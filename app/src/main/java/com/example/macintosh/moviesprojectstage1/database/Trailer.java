@@ -1,6 +1,6 @@
 package com.example.macintosh.moviesprojectstage1.database;
 
-public class Trailer {
+public class Trailer{
     private String id;
     private String name;
     private String key;

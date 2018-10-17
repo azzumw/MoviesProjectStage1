@@ -3,7 +3,11 @@ package com.example.macintosh.moviesprojectstage1.utilities;
 import android.arch.lifecycle.LiveData;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.LinearLayout;
+
+import com.example.macintosh.moviesprojectstage1.EndPoints;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
+import com.example.macintosh.moviesprojectstage1.database.Review;
 import com.example.macintosh.moviesprojectstage1.database.Trailer;
 
 import org.json.JSONArray;
@@ -25,7 +29,6 @@ public class NetworkUtils {
 //    www.youtube.com/watch?v=MDR3bfmzV8c&feature=youtu.be
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
-    private static final String VIDEO_STR = "videos";
     private static final String API_KEY_PARAM = "api_key";
     private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
 
@@ -46,9 +49,9 @@ public class NetworkUtils {
 
     }
 
-    public static URL buildUrl(int id){
+    public static URL buildUrl(int id,String type){
         String id_toString = String.valueOf(id);
-        Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(id_toString).appendPath(VIDEO_STR).appendQueryParameter(API_KEY_PARAM,API_KEY_VALUE).build();
+        Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(id_toString).appendPath(type).appendQueryParameter(API_KEY_PARAM,API_KEY_VALUE).build();
 
         Log.v("URI BUILT: ",uri.toString());
         URL  url = null;
@@ -86,7 +89,7 @@ public class NetworkUtils {
 
 
 
-    public static ArrayList<Movie> getJSONData(String jsonString) throws JSONException {
+    public static ArrayList<Movie> getJSONMovieData(String jsonString) throws JSONException {
         final String RESULTS_KEY = "results";
         final String TITLE_KEY = "title";
         final String ID_KEY= "id";
@@ -140,6 +143,25 @@ public class NetworkUtils {
         }
 
         return parseTrailerData;
+    }
+
+    public static List<Review> getJSONReviewData(String jsonString) throws JSONException {
+        final String AUTHOR_KEY = "author";
+        final String REVIEW_KEY = "content";
+        final String RESULTS_KEY = "results";
+
+      ArrayList<Review> parsedReviewData = new ArrayList<>();
+
+        JSONObject rootObj = new JSONObject(jsonString);
+        JSONArray resultsArray = rootObj.getJSONArray(RESULTS_KEY);
+
+        for(int i= 0; i < resultsArray.length(); i++){
+            String author = resultsArray.getJSONObject(i).getString(AUTHOR_KEY);
+            String review = resultsArray.getJSONObject(i).getString(REVIEW_KEY);
+            parsedReviewData.add(new Review(review,author));
+        }
+
+        return parsedReviewData;
     }
 
 }

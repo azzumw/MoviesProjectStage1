@@ -37,4 +37,6 @@
 
     <string name="space"> </string>
     <string name="trailer_1_dummy_string">Trailer </string>
+    <string name="author_name_hint">Author Name</string>
+    <string name="example_review_hint">This is an example review. This is an example review.</string>
 </resources>
