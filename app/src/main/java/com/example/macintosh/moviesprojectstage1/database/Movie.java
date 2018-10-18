@@ -18,17 +18,16 @@ public class Movie implements Parcelable{
     private int id;
     private String title;
 
-    @Ignore
+
     private int voteCount;
 
 
-    @Ignore
     private String imageUrl;
-    @Ignore
+
     private String plotSynopsis;
-    @Ignore
+
     private int plotAverage;
-    @Ignore
+
     private String releaseDate;
 
     @Ignore
@@ -39,8 +38,8 @@ public class Movie implements Parcelable{
         this.title = title;
     }
 
-
-    public Movie(String title, int id){
+    @Ignore
+    private Movie(String title, int id){
         this(title);
         this.id=id;
     }
@@ -69,7 +68,7 @@ public class Movie implements Parcelable{
         this.plotAverage = plotAverage;
     }
 
-    @Ignore
+
     public Movie(String title, int id, int voteCount, String imageUrl, String releaseDate, int plotAverage, String plotSynopsis){
         this(title,id,voteCount,imageUrl,releaseDate,plotAverage);
         this.plotSynopsis = plotSynopsis;
@@ -137,6 +136,9 @@ public class Movie implements Parcelable{
         return releaseDate;
     }
 
+    public void setTitle(String title){
+        this.title = title;
+    }
 
     @Override
     public int describeContents() {

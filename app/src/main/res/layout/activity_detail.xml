@@ -87,7 +87,7 @@
             android:layout_toRightOf="@id/posterId"
             android:layout_toEndOf="@id/posterId"
             android:layout_below="@id/plotAvgValue"
-            android:src="@drawable/favplainheart" />
+            android:src="@drawable/baseline_favorite_black_18dp" />
 
 
         <TextView
@@ -106,6 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvPlotSynopsisValue"
+            android:orientation="vertical"
             android:layout_marginLeft="5dp">
 
             <android.support.v7.widget.RecyclerView
@@ -115,6 +116,16 @@
                 android:id="@+id/rv_detailAct_trailerslist">
 
             </android.support.v7.widget.RecyclerView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/detailAct_tv_error_message_display"
+                android:textSize="22sp"
+                android:padding="16dp"
+                android:textColor="#fff"
+                android:text="@string/error_message"
+                android:visibility="invisible"/>
         </LinearLayout>
 
 

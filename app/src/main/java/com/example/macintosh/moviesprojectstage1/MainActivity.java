@@ -83,12 +83,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onResume() {
         super.onResume();
         mRecyclerView.setAdapter(mMovieAdapter);
-        if(checkConnection()){
-            loadMovieData();
-        }
-        else{
-            showErrorMessage();
-        }
+        loadMovieData();
+
 
     }
 
@@ -135,34 +131,36 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             final String[] httpResponse = new String[1];
 
 
+                if(checkConnection()){
+                    AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
 
-                AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-
-                                    List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
-                                    setMovies(movies);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                        });
 
-                    }
-                });
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
 
+                                        List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
+                                        setMovies(movies);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
 
+                        }
+                    });
+
+                }else{
+                    showErrorMessage();
+                }
         }
 
         getSupportActionBar().setTitle(sharedPreference.substring(0,1).toUpperCase()+sharedPreference.substring(1));
@@ -214,16 +212,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void onClickHandler(Movie movie) {
         Class detailActivityClass = DetailActivity.class;
 
-        if(checkConnection()){
-            Intent intent = new Intent(this,detailActivityClass);
+        Intent intent = new Intent(this,detailActivityClass);
 
-            intent.putExtra("Movie",movie);
-            startActivity(intent);
-        }else{
-            Snackbar mySnackbar = Snackbar.make(findViewById(R.id.ll_main_root),
-                    R.string.error_message, Snackbar.LENGTH_SHORT);
-            mySnackbar.show();
-        }
+        intent.putExtra("Movie",movie);
+        startActivity(intent);
 
     }
 

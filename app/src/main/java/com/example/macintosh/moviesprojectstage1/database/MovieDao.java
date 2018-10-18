@@ -18,15 +18,6 @@ public interface MovieDao {
     @Insert
     void insertMovie(Movie movie);
 
-    @Insert
-    void insetMovieId(int id);
-
-    @Insert
-    void insertTitle(String title);
-
-    @Insert
-    void insertImageUrl(String imageurl);
-
     @Delete
     void deleteMovie(Movie movie);
 

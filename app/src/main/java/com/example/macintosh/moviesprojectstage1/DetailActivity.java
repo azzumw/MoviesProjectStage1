@@ -1,6 +1,9 @@
 package com.example.macintosh.moviesprojectstage1;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +36,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     private TextView tvReleaseDateValue;
     private TextView tvTitleValue;
+    private TextView errorMessageDisplay;
     private TextView tvPlotVotes;
     private TextView tvPlotSynopsis;
     private ImageView posterView;
@@ -91,7 +95,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
         mRecyclerView.setAdapter(mTrailerAdapter);
 
-        loadTrailers();
+        if(isOnline()){
+            loadTrailers();
+        }else{
+            displayErrorMessage();
+        }
+
 
     }
 
@@ -127,9 +136,9 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             @Override
             public void run() {
                 if(Boolean.TRUE.equals(movie.getFavourite())) {
-                    favouriteImageButton.setImageResource(R.drawable.favplainheart);
+                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_black_18dp);
                 } else {
-                    favouriteImageButton.setImageResource(R.drawable.translusentheartone);
+                    favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
                 }
 
             }
@@ -187,6 +196,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         posterView = findViewById(R.id.posterId);
         favouriteImageButton = findViewById(R.id.favouriteBtnId);
         mRecyclerView = findViewById(R.id.rv_detailAct_trailerslist);
+        errorMessageDisplay = findViewById(R.id.detailAct_tv_error_message_display);
     }
 
     private void setupViews(String title,String img, String plotsyn, int plotAvg, String relDate){
@@ -279,6 +289,23 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         intent.putExtra("VIDEO_ID", videoId);
         startActivity(intent);
     }
+
+    protected boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void displayErrorMessage(){
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        errorMessageDisplay.setVisibility(View.VISIBLE);
+        errorMessageDisplay.setText(getString(R.string.error_message));
+    }
+
 
 
 }
