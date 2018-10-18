@@ -1,11 +1,15 @@
 package com.example.macintosh.moviesprojectstage1;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,7 +40,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     private TextView tvReleaseDateValue;
     private TextView tvTitleValue;
-    private TextView errorMessageDisplay;
     private TextView tvPlotVotes;
     private TextView tvPlotSynopsis;
     private ImageView posterView;
@@ -83,24 +86,48 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         });
 
 
-        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+//        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+//        mRecyclerView.setLayoutManager(linearLayoutManager);
 
-        mRecyclerView.setHasFixedSize(true);
+//        mRecyclerView.setHasFixedSize(true);
 
-        mTrailerAdapter = new TrailerAdapter(getApplicationContext(),this);
-        mReviewAdapter = new ReviewAdapter();
+//        mTrailerAdapter = new TrailerAdapter(getApplicationContext(),this);
+//        mReviewAdapter = new ReviewAdapter();
         // make network request to get the video links
 
-        mRecyclerView.setAdapter(mTrailerAdapter);
+//        mRecyclerView.setAdapter(mTrailerAdapter);
 
-        if(isOnline()){
-            loadTrailers();
-        }else{
-            displayErrorMessage();
-        }
+//        if(isOnline()){
+//            loadTrailers();
+//        }else{
+//            displayErrorMessage();
+//        }
 
+        //viewpager and tablayout
+
+
+
+        sendDataToFragments();
+
+    }
+
+    private void sendDataToFragments(){
+
+        ViewPager viewPager = findViewById(R.id.viewPagerId);
+        FragmentManager fm = getFragmentManager();
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm,this);
+        viewPager.setAdapter(viewPagerAdapter);
+
+
+        TabLayout tabLayout = findViewById(R.id.tablayout_id);
+        tabLayout.setupWithViewPager(viewPager);
+        Bundle bundle = new Bundle();
+        bundle.putInt("movie_id",movie.getId());
+        Fragment fragmentReviews = viewPagerAdapter.getItem(1);
+        Fragment fragmentTrailer = viewPagerAdapter.getItem(0);
+        fragmentReviews.setArguments(bundle);
+        fragmentTrailer.setArguments(bundle);
 
     }
 
@@ -195,8 +222,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         tvPlotVotes = findViewById(R.id.plotAvgValue);
         posterView = findViewById(R.id.posterId);
         favouriteImageButton = findViewById(R.id.favouriteBtnId);
-        mRecyclerView = findViewById(R.id.rv_detailAct_trailerslist);
-        errorMessageDisplay = findViewById(R.id.detailAct_tv_error_message_display);
+//        mRecyclerView = findViewById(R.id.rv_detailAct_trailerslist);
     }
 
     private void setupViews(String title,String img, String plotsyn, int plotAvg, String relDate){
@@ -239,55 +265,20 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         });
     }
 
-    private void loadReviews(){
-        int id = movie.getId();
-        final URL searchURL = NetworkUtils.buildUrl(id,EndPoints.REVIEWS.getType());
-
-        final String[] httpResponse = new String[1];
-        AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            List<Review> reviewList = NetworkUtils.getJSONReviewData(httpResponse[0]);
-                            setReviews(reviewList);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }
-        });
-    }
-
-
 
 
     private void setTrailers(List<Trailer> trailers) {
             mTrailerAdapter.setTrailerData(trailers);
     }
 
-    private void setReviews(List<Review> reviews){
-        mReviewAdapter.setmReviewData(reviews);
-    }
-
 
     @Override
     public void onClickHandler(Trailer trailer) {
 
-        String videoId = trailer.getKey();
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
-        intent.putExtra("VIDEO_ID", videoId);
-        startActivity(intent);
+//        String videoId = trailer.getKey();
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
+//        intent.putExtra("VIDEO_ID", videoId);
+//        startActivity(intent);
     }
 
     protected boolean isOnline() {
@@ -302,8 +293,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
 
     private void displayErrorMessage(){
         mRecyclerView.setVisibility(View.INVISIBLE);
-        errorMessageDisplay.setVisibility(View.VISIBLE);
-        errorMessageDisplay.setText(getString(R.string.error_message));
+
     }
 
 

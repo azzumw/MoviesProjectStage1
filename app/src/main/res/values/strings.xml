@@ -2,6 +2,8 @@
     <string name="app_name">MoviesProjectStage1</string>
     <string name="sort_by_menu_title">Sort By</string>
     <string name="error_message">Failed to get results. Please try again!</string>
+    <string name="no_review_error">No Reviews Available</string>
+    <string name="no_trailer_error">No Trailers Available</string>
 
     <string name="sort_menu_title">Sort</string>
     <string name="title_sort_pref">Sort By</string>
@@ -39,4 +41,6 @@
     <string name="trailer_1_dummy_string">Trailer </string>
     <string name="author_name_hint">Author Name</string>
     <string name="example_review_hint">This is an example review. This is an example review.</string>
+    <string name="trailerPageTitle">Trailers</string>
+    <string name="reviewPageTitle">Reviews</string>
 </resources>
