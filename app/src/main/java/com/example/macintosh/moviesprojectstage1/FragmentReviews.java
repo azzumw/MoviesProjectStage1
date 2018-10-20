@@ -31,7 +31,7 @@ public class FragmentReviews extends Fragment{
     private ReviewAdapter mReviewAdapter;
     private LinearLayoutManager linearLayoutManager;
     private int movieId;
-
+    private final String MOVIE_ID_KEY= "movie_id";
     private TextView errorMessage;
 
     public FragmentReviews(){
@@ -43,6 +43,7 @@ public class FragmentReviews extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_review,container,false);
         errorMessage = view.findViewById(R.id.frag_review__tv_error_message_display);
+
         mRecyclerView = view.findViewById(R.id.recyclerViewReviewFrag);
         //get the list
         linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -67,12 +68,22 @@ public class FragmentReviews extends Fragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getArguments()!= null)
+            movieId = getArguments().getInt(MOVIE_ID_KEY);
+    }
 
+    public static FragmentReviews getInstance(int param){
+        FragmentReviews fragment = new FragmentReviews();
+        Bundle args = new Bundle();
+        args.putInt("movie_id", param);
+        fragment.setArguments(args);
+        return fragment;
     }
 
 
     private void loadReviews(){
-        movieId = this.getArguments().getInt("movie_id");
+
+
         final URL searchURL = NetworkUtils.buildUrl(movieId,EndPoints.REVIEWS.getType());
 
         final String[] httpResponse = new String[1];

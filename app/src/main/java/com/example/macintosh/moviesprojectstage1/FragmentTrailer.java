@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     private TrailerAdapter mTrailerAdapter;
     private LinearLayoutManager linearLayoutManager;
     private int movieId;
-
+    private final String MOVIE_ID_KEY = "movie_id";
     private TextView errorMessage;
 
     public FragmentTrailer() {
@@ -47,7 +48,6 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
         errorMessage = view.findViewById(R.id.frag_trailer__tv_error_message_display);
         mRecyclerView =  view.findViewById(R.id.recyclerViewTrailerFrag);
         linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
@@ -57,22 +57,31 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
 
         mRecyclerView.setAdapter(mTrailerAdapter);
 
-        movieId = this.getArguments().getInt("movie_id");
-
-        if(isOnline()){
-            loadTrailers();
-        }else{
-            displayErrorMessage();
-        }
-
         return view;
+    }
+
+    public static FragmentTrailer getInstance(int param){
+        Bundle args = new Bundle();
+        args.putInt("movie_id", param);
+        FragmentTrailer fragment = new FragmentTrailer();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if(getArguments()!= null)
+            movieId = getArguments().getInt(MOVIE_ID_KEY);
 
+
+        if(isOnline()){
+            loadTrailers();
+        }else{
+            displayErrorMessage();
+        }
+//        Log.e(MOVIE_ID_KEY,""+movieId);
     }
 
     private void loadTrailers(){

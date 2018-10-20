@@ -117,17 +117,15 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         ViewPager viewPager = findViewById(R.id.viewPagerId);
         FragmentManager fm = getFragmentManager();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm,this);
-        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),"Trailers");
+        viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),"Reviews");
 
 
+//        Bundle bundle = new Bundle();
+//        bundle.putInt("movie_id",movie.getId());
         TabLayout tabLayout = findViewById(R.id.tablayout_id);
         tabLayout.setupWithViewPager(viewPager);
-        Bundle bundle = new Bundle();
-        bundle.putInt("movie_id",movie.getId());
-        Fragment fragmentReviews = viewPagerAdapter.getItem(1);
-        Fragment fragmentTrailer = viewPagerAdapter.getItem(0);
-        fragmentReviews.setArguments(bundle);
-        fragmentTrailer.setArguments(bundle);
+        viewPager.setAdapter(viewPagerAdapter);
 
     }
 
