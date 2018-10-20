@@ -57,11 +57,7 @@ public class FragmentReviews extends Fragment{
 
         mRecyclerView.setAdapter(mReviewAdapter);
 
-        if(isOnline()){
-            loadReviews();
-        }else{
-            displayErrorMessage();
-        }
+
         return view;
     }
 
@@ -70,6 +66,13 @@ public class FragmentReviews extends Fragment{
         super.onCreate(savedInstanceState);
         if(getArguments()!= null)
             movieId = getArguments().getInt(MOVIE_ID_KEY);
+
+
+        if(isOnline()){
+            loadReviews();
+        }else{
+            displayErrorMessage();
+        }
     }
 
     public static FragmentReviews getInstance(int param){
