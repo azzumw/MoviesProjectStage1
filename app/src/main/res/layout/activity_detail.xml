@@ -3,6 +3,7 @@
 
 <LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLinear"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -105,27 +106,26 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/ll_detail_act_frag_container"
             android:layout_below="@+id/tvPlotSynopsisValue"
             android:orientation="vertical"
             android:layout_marginLeft="5dp">
 
-            <android.support.v7.widget.RecyclerView
+            <android.support.design.widget.TabLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tvPlotSynopsisValue"
-                android:id="@+id/rv_detailAct_trailerslist">
+                app:tabMode="fixed"
+                app:tabGravity="fill"
+                android:id="@+id/tablayout_id">
 
-            </android.support.v7.widget.RecyclerView>
+            </android.support.design.widget.TabLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detailAct_tv_error_message_display"
-                android:textSize="22sp"
-                android:padding="16dp"
-                android:textColor="#fff"
-                android:text="@string/error_message"
-                android:visibility="invisible"/>
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/viewPagerId"></android.support.v4.view.ViewPager>
+
+
         </LinearLayout>
 
 
