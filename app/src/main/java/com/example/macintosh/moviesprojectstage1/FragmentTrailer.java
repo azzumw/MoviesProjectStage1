@@ -44,18 +44,19 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        Log.e("OnCreateView", "I am in OncReateView");
         view = inflater.inflate(R.layout.frag_trailer,container,false);
         errorMessage = view.findViewById(R.id.frag_trailer__tv_error_message_display);
         mRecyclerView =  view.findViewById(R.id.recyclerViewTrailerFrag);
-        linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+
+        linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
         mRecyclerView.setHasFixedSize(true);
 
-        mTrailerAdapter = new TrailerAdapter(getContext(),this);
-        // make network request to get the video links
 
         mRecyclerView.setAdapter(mTrailerAdapter);
+        mRecyclerView.setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -71,17 +72,20 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       Log.e("OnCreate", "I am in OncReate");
+        mTrailerAdapter = new TrailerAdapter(getContext(),this);
 
-        if(getArguments()!= null)
+        if(getArguments()!= null){
+
             movieId = getArguments().getInt(MOVIE_ID_KEY);
-
+        }
 
         if(isOnline()){
             loadTrailers();
         }else{
             displayErrorMessage();
         }
-//        Log.e(MOVIE_ID_KEY,""+movieId);
+
     }
 
     private void loadTrailers(){
