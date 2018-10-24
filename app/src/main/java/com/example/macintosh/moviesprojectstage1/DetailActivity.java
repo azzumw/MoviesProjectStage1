@@ -1,7 +1,7 @@
 package com.example.macintosh.moviesprojectstage1;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -36,7 +36,7 @@ import java.net.URL;
 import java.util.List;
 
 
-public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
+public class DetailActivity extends AppCompatActivity {
 
     private TextView tvReleaseDateValue;
     private TextView tvTitleValue;
@@ -115,10 +115,10 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private void sendDataToFragments(){
 
         ViewPager viewPager = findViewById(R.id.viewPagerId);
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm,this);
         viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),getString(R.string.trailerPageTitle));
-        viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),getString(R.string.reviewPageTitle));
+//        viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),getString(R.string.reviewPageTitle));
 
 
 //        Bundle bundle = new Bundle();
@@ -270,14 +270,14 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
 
-    @Override
-    public void onClickHandler(Trailer trailer) {
+//    @Override
+//    public void onClickHandler(Trailer trailer) {
 
 //        String videoId = trailer.getKey();
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
 //        intent.putExtra("VIDEO_ID", videoId);
 //        startActivity(intent);
-    }
+//    }
 
     protected boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
