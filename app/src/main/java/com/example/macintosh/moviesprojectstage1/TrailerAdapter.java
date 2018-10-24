@@ -47,7 +47,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
        holder.txtView.setText(mContext.getString(R.string.trailer_1_dummy_string));
        holder.txtView.append(" ");
        holder.txtView.append(String.valueOf(trailerNumber));
-       Picasso.with(mContext).load(R.drawable.youtubeiconplay).into(holder.mIconYoutube);
+       Picasso.with(mContext).load(R.drawable.youtubeicon).into(holder.mIconYoutube);
 
     }
 

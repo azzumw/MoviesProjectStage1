@@ -116,9 +116,9 @@ public class DetailActivity extends AppCompatActivity {
 
         ViewPager viewPager = findViewById(R.id.viewPagerId);
         FragmentManager fm = getSupportFragmentManager();
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm,this);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm);
         viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),getString(R.string.trailerPageTitle));
-//        viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),getString(R.string.reviewPageTitle));
+        viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),getString(R.string.reviewPageTitle));
 
 
 //        Bundle bundle = new Bundle();

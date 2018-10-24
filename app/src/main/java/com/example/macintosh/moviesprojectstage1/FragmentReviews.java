@@ -3,8 +3,9 @@ package com.example.macintosh.moviesprojectstage1;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.app.Fragment;;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,19 @@ public class FragmentReviews extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_review,container,false);
+        return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments()!= null)
+            movieId = getArguments().getInt(MOVIE_ID_KEY);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         errorMessage = view.findViewById(R.id.frag_review__tv_error_message_display);
 
         mRecyclerView = view.findViewById(R.id.recyclerViewReviewFrag);
@@ -53,9 +67,6 @@ public class FragmentReviews extends Fragment{
         mRecyclerView.setHasFixedSize(true);
 
         mReviewAdapter = new ReviewAdapter();
-        // make network request to get the video links
-
-        mRecyclerView.setAdapter(mReviewAdapter);
 
         if(isOnline()){
             loadReviews();
@@ -63,14 +74,8 @@ public class FragmentReviews extends Fragment{
             displayErrorMessage();
         }
 
-        return view;
-    }
+        mRecyclerView.setAdapter(mReviewAdapter);
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(getArguments()!= null)
-            movieId = getArguments().getInt(MOVIE_ID_KEY);
     }
 
     public static FragmentReviews getInstance(int param){

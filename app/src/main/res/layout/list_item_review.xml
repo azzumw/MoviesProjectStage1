@@ -14,12 +14,14 @@
         android:layout_margin="5dp"
         android:padding="3dp"
         tools:text="@string/author_name_hint"
+        android:textColor="#fff"
         android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/reviewLabel"
         android:layout_width="match_parent"
         android:layout_height="68dp"
+        android:textColor="#fff"
         android:layout_below="@+id/authorNameLabel"
         android:layout_margin="5dp"
         android:padding="3dp"
