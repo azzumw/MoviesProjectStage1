@@ -114,7 +114,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void sendDataToFragments(){
 
-        ViewPager viewPager = findViewById(R.id.viewPagerId);
+        CustomViewPager viewPager = findViewById(R.id.viewPagerId);
         FragmentManager fm = getSupportFragmentManager();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm);
         viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),getString(R.string.trailerPageTitle));

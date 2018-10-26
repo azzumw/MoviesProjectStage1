@@ -1,134 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLinear"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:background="@color/crimson">
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="88dp"
+            android:layout_height="wrap_content"
             android:id="@+id/tvTitle"
-            android:hint="@string/titleText"
-            android:textSize="30sp"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            style="@style/textSyling"
-            android:layout_gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="TEXT"
             android:textColor="#fff"
-            android:textAllCaps="true" />
+            android:textAllCaps="true"
+            android:textSize="30sp"/>
 
-    </LinearLayout>
+    </FrameLayout>
 
-    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_weight="5"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:fillViewport="true"
-        android:layout_height="0dp"
-        tools:context="com.example.macintosh.moviesprojectstage1.DetailActivity">
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="180dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:id="@+id/posterId"
-            android:layout_marginLeft="8dp"
-            android:contentDescription=""/>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/releaseDateValue"
-            android:hint="01-01-90"
-            style="@style/textSyling"
-            android:textSize="14sp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/posterId"
-            android:layout_toEndOf="@id/posterId" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/plotAvgValue"
-            android:hint="@string/dummy_date_text"
-            style="@style/textSyling"
-            android:textSize="14sp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/posterId"
-            android:layout_toEndOf="@id/posterId"
-            android:layout_below="@id/releaseDateValue"/>
-
-        <ImageButton
-            android:id="@+id/favouriteBtnId"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:layout_toRightOf="@id/posterId"
-            android:layout_toEndOf="@id/posterId"
-            android:layout_below="@id/plotAvgValue"
-            android:src="@drawable/baseline_favorite_black_18dp" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvPlotSynopsisValue"
-            style="@style/textSyling"
-            android:textSize="14sp"
-            android:textColor="#fff"
-            android:hint="@string/plot_synopsis_text"
-            android:layout_below="@id/posterId"
-            android:layout_marginStart="5dp"
-            android:layout_marginLeft="5dp"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_detail_act_frag_container"
-            android:layout_below="@+id/tvPlotSynopsisValue"
-            android:orientation="vertical"
-            android:layout_marginLeft="5dp">
-
-            <android.support.design.widget.TabLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
-                app:tabTextColor="#fff"
-                app:tabSelectedTextColor="#fff"
-                android:id="@+id/tablayout_id">
-
-            </android.support.design.widget.TabLayout>
-
-            <android.support.v4.view.ViewPager
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/viewPagerId"></android.support.v4.view.ViewPager>
+                android:layout_height="wrap_content">
 
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/posterId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="180dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="8dp"
+                    android:contentDescription="" />
 
 
-    </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/releaseDateValue"
+                    style="@style/textSyling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/posterId"
+                    android:layout_toRightOf="@id/posterId"
+                    android:hint="01-01-90"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/plotAvgValue"
+                    style="@style/textSyling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/releaseDateValue"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/posterId"
+                    android:layout_toRightOf="@id/posterId"
+                    android:hint="@string/dummy_date_text"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/favouriteBtnId"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_below="@id/plotAvgValue"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@id/posterId"
+                    android:layout_toRightOf="@id/posterId"
+                    android:src="@drawable/baseline_favorite_black_18dp" />
+
+
+                <TextView
+                    android:id="@+id/tvPlotSynopsisValue"
+                    style="@style/textSyling"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/posterId"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:hint="@string/plot_synopsis_text"
+                    android:textColor="#fff"
+                    android:textSize="14sp" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tvPlotSynopsisValue">
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tablayout_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tabGravity="fill"
+                        app:tabMode="fixed"
+                        android:overScrollMode="never"
+                        app:tabSelectedTextColor="#fff"
+                        app:tabTextColor="#fff">
+
+                    </android.support.design.widget.TabLayout>
+                    <com.example.macintosh.moviesprojectstage1.CustomViewPager
+                        android:id="@+id/viewPagerId"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never">
+
+                    </com.example.macintosh.moviesprojectstage1.CustomViewPager>
+                </FrameLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </FrameLayout>
+
+
 </LinearLayout>
