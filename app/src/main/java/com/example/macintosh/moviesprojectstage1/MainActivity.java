@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private Parcelable mListState;
     private final String PARCEL_KEY = "ListState";
-    private final String URL_KEY = "URL_KEY";
     private TextView mErrorMessagetv;
 
     private ProgressBar progressBar;
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
         getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.custom_theme_color));
 
-        Log.e("OncREATE","Activity created");
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.rv_main_act);
@@ -80,12 +78,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onResume();
         mRecyclerView.setAdapter(mMovieAdapter);
         loadMovieData();
-    }
+      }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.e("OnSaveInstanceState", "Saving State..");
         mListState = mRecyclerView.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(PARCEL_KEY,mListState);
     }
@@ -94,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if(savedInstanceState!=null){
-            Log.e("OnRestoreInstanceState", "Restoring State..");
             mListState = savedInstanceState.getParcelable(PARCEL_KEY);
         }
     }
@@ -109,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
                 @Override
                 public void onChanged(@Nullable List<Movie> movies) {
-                    Log.e("MainACTIVITY: ", "Receving database update from LIVEDATA");
                     setMovies(movies);
                 }
             });
@@ -160,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieAdapter.setMovieData(movies);
 
         if(mListState!=null){
-            Log.e("OnResume", "Retreiving State..");
             mRecyclerView.getLayoutManager().onRestoreInstanceState(mListState);
         }
     }
@@ -199,12 +194,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onClickHandler(Movie movie) {
         Class detailActivityClass = DetailActivity.class;
-
         Intent intent = new Intent(this,detailActivityClass);
-
         intent.putExtra("Movie",movie);
         startActivity(intent);
-
     }
 
     private String getSharedPreferenceValue(){
@@ -235,6 +227,4 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             return false;
         }
     }
-
-
 }

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/sort_menu_title">
-
-
         <ListPreference android:title="@string/sort_by_menu_title"
             android:defaultValue="@string/popular"
             android:key="@string/Pref_Key"
