@@ -20,9 +20,7 @@ public class CustomViewPager extends ViewPager {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         try {
-            int currentPagePosition = 0;
-//            View child = getChildAt(currentPagePosition);
-//            mCurrentView = getChildAt(currentPagePosition);
+
             if(mCurrentView!= null){
                 mCurrentView.measure(widthMeasureSpec,MeasureSpec.makeMeasureSpec(0,MeasureSpec.UNSPECIFIED));
                 int h = mCurrentView.getMeasuredHeight();

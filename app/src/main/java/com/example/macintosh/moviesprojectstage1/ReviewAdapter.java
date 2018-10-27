@@ -54,11 +54,11 @@ class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>
         private TextView authortxtview;
         private TextView reviewtxtview;
 
-       public ReviewViewHolder(View view){
-           super(view);
-           authortxtview = view.findViewById(R.id.authorNameLabel);
-           reviewtxtview = view.findViewById(R.id.reviewLabel);
+        public ReviewViewHolder(View view){
+            super(view);
+            authortxtview = view.findViewById(R.id.authorNameLabel);
+            reviewtxtview = view.findViewById(R.id.reviewLabel);
 
-       }
+        }
     }
 }

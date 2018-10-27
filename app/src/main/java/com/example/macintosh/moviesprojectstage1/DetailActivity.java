@@ -49,8 +49,7 @@ public class DetailActivity extends AppCompatActivity {
     private AppDatabase mDb;
 
     private Movie movie;
-    private RecyclerView mRecyclerView;
-    private TrailerAdapter mTrailerAdapter;
+    private final String MOVIE_KEY = "Movie";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,7 @@ public class DetailActivity extends AppCompatActivity {
         assignViews();
 
         Intent intent = getIntent();
-        movie = intent.getParcelableExtra("Movie");
+        movie = intent.getParcelableExtra(MOVIE_KEY);
 
         String title = movie.getTitle();
         String imageUrl = movie.getImageUrl();
@@ -72,8 +71,6 @@ public class DetailActivity extends AppCompatActivity {
         setupViews(title,imageUrl,plotSynopsis,plotAverage,releaseDate);
 
         mDb = AppDatabase.getsInstance(this);
-        Log.e("Detail Activity: ",movie.toString());
-
         setFavouriteState(movie.getId());
 
         favouriteImageButton.setOnClickListener(new View.OnClickListener() {
@@ -95,9 +92,6 @@ public class DetailActivity extends AppCompatActivity {
         viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),getString(R.string.trailerPageTitle));
         viewPagerAdapter.addFragment(FragmentReviews.getInstance(movie.getId()),getString(R.string.reviewPageTitle));
 
-
-//        Bundle bundle = new Bundle();
-//        bundle.putInt("movie_id",movie.getId());
         TabLayout tabLayout = findViewById(R.id.tablayout_id);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(viewPagerAdapter);
@@ -130,7 +124,6 @@ public class DetailActivity extends AppCompatActivity {
                     if (movieId == id) {
                         movie.setIsFavourite(true);
                     } else {
-                        Log.e("DetailActivity: ", "final else");
                         movie.setIsFavourite(false);
                     }
                 }
@@ -155,14 +148,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void onFavouriteButtonClicked(final Movie movie){
-        //check if this movie object isFavourite.
-        //if no, set isFavourite  = true;
-        //else, set isFavourite = false;
 
         if(movie.getFavourite()){
             //set isFavourite = false;
             //remove from database
-            Log.v("DetailActivity","Favourtie set to true: "+ movie.toString());
             movie.setIsFavourite(false);
 
             AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
@@ -171,15 +160,11 @@ public class DetailActivity extends AppCompatActivity {
                     mDb.movieDao().deleteMovie(movie);
                 }
             });
-            Log.v("DetailActivity",movie.toString());
-            Toast.makeText(DetailActivity.this, "Removed from Favourites", Toast.LENGTH_SHORT).show();
-
-
+            Toast.makeText(DetailActivity.this, R.string.removedfromfavmsg, Toast.LENGTH_SHORT).show();
         }
         else{
             //set isFavourite = true
             //add to database
-            Log.v("DetailActivity","Favourtie set to default false: "+ movie.toString());
             movie.setIsFavourite(true);
 
             AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
@@ -190,7 +175,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
 
-            Toast.makeText(DetailActivity.this, "Added to Favourites", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DetailActivity.this, R.string.addToFavMsg, Toast.LENGTH_SHORT).show();
         }
 
         updateFavouriteImage();
@@ -204,80 +189,14 @@ public class DetailActivity extends AppCompatActivity {
         tvPlotVotes = findViewById(R.id.plotAvgValue);
         posterView = findViewById(R.id.posterId);
         favouriteImageButton = findViewById(R.id.favouriteBtnId);
-//        mRecyclerView = findViewById(R.id.rv_detailAct_trailerslist);
     }
 
     private void setupViews(String title,String img, String plotsyn, int plotAvg, String relDate){
         Picasso.with(this).load(img).into(posterView);
         tvTitleValue.setText(title);
         tvReleaseDateValue.setText(relDate);
-        tvPlotVotes.setText(String.valueOf(plotAvg));
+        tvPlotVotes.setText(String.valueOf(plotAvg).concat("/10"));
         tvPlotSynopsis.setText(plotsyn);
         favouriteImageButton.setImageResource(R.drawable.baseline_favorite_border_black_18dp);
     }
-
-    private void loadTrailers(){
-
-        int id = movie.getId();
-        final URL searchURL = NetworkUtils.buildUrl(id,EndPoints.VIDEOS.getType());
-
-        final String[] httpResponse = new String[1];
-        AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            List<Trailer> trailersList = NetworkUtils.getJSONTrailerData(httpResponse[0]);
-                            setTrailers(trailersList);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }
-        });
-    }
-
-
-
-    private void setTrailers(List<Trailer> trailers) {
-            mTrailerAdapter.setTrailerData(trailers);
-    }
-
-
-//    @Override
-//    public void onClickHandler(Trailer trailer) {
-
-//        String videoId = trailer.getKey();
-//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:"+videoId));
-//        intent.putExtra("VIDEO_ID", videoId);
-//        startActivity(intent);
-//    }
-
-    protected boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void displayErrorMessage(){
-        mRecyclerView.setVisibility(View.INVISIBLE);
-
-    }
-
-
-
 }

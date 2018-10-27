@@ -18,8 +18,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        Log.e("MainViewModel", "Activiely retreiving movies rom the database");
-         movies = AppDatabase.getsInstance(this.getApplication()).movieDao().loadAllFavouriteMovies();
+        movies = AppDatabase.getsInstance(this.getApplication()).movieDao().loadAllFavouriteMovies();
     }
 
     public LiveData<List<Movie>> getMovies() {

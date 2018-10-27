@@ -59,13 +59,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
         getWindow().getDecorView().setBackgroundColor(getResources().getColor(R.color.custom_theme_color));
 
-
         Log.e("OncREATE","Activity created");
         mErrorMessagetv = findViewById(R.id.tv_error_message_display);
         progressBar = findViewById(R.id.pb_loading_indicator);
         mRecyclerView = findViewById(R.id.rv_main_act);
-
-
         gridLayoutManager = new GridLayoutManager(this,3,GridLayoutManager.VERTICAL,false);
         linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
 
@@ -76,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieAdapter = new MovieAdapter(this,getApplicationContext());
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
-
     }
 
     @Override
@@ -84,8 +80,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onResume();
         mRecyclerView.setAdapter(mMovieAdapter);
         loadMovieData();
-
-
     }
 
     @Override
@@ -107,14 +101,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private void loadMovieData(){
 
-
         String sharedPreference = getSharedPreferenceValue();
 
         if(sharedPreference.equals(getString(R.string.favourites))){
-
-
-            //database
-//            final LiveData<List<Movie>> movieList = mDb.movieDao().loadAllFavouriteMovies();
+            //query db
             MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
             viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
                 @Override
@@ -124,50 +114,48 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 }
             });
 
-        }else {
-            //network
+        } else {
+            //make a network call
             final URL searchURL = NetworkUtils.buildUrl(sharedPreference);
 
             final String[] httpResponse = new String[1];
 
 
-                if(checkConnection()){
-                    AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
+            if(checkConnection()){
+                AppExecutors.getInstance().getNetworkIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            httpResponse[0] = NetworkUtils.getResponseFromHttpUrl(searchURL);
 
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-
-                                        List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
-                                        setMovies(movies);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
 
-                }else{
-                    showErrorMessage();
-                }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    List<Movie> movies = NetworkUtils.getJSONMovieData(httpResponse[0]);
+                                    setMovies(movies);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                });
+
+            }else{
+                showErrorMessage();
+            }
         }
 
         getSupportActionBar().setTitle(sharedPreference.substring(0,1).toUpperCase()+sharedPreference.substring(1));
     }
 
     private void setMovies(List<Movie> movies) {
-
 
         mMovieAdapter.setMovieData(movies);
 
@@ -238,12 +226,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         progressBar.setVisibility(View.VISIBLE);
 
         if(isOnline()){
-//            Toast.makeText(MainActivity.this, "You are connected to Internet", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
             showJsonDataView();
             return true;
         }else{
-//            Toast.makeText(MainActivity.this, "You are not connected to Internet", Toast.LENGTH_SHORT).show();
             progressBar.setVisibility(View.INVISIBLE);
             showErrorMessage();
             return false;

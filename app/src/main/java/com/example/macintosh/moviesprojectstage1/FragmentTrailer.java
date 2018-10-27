@@ -37,10 +37,6 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     private final String MOVIE_ID_KEY = "movie_id";
     private TextView errorMessage;
 
-    public FragmentTrailer() {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -82,7 +78,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       Log.e("OnCreate", "I am in OncReate");
+        Log.e("OnCreate", "I am in OncReate");
 
         if(getArguments()!= null){
 
@@ -110,8 +106,12 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
                     public void run() {
                         try {
                             List<Trailer> trailersList = NetworkUtils.getJSONTrailerData(httpResponse[0]);
-                            Log.e("runOnUIThread",""+trailersList.size());
-                            setTrailers(trailersList);
+                            if(trailersList.isEmpty()){
+                                displayErrorMessage();
+                            }else {
+
+                                setTrailers(trailersList);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -139,7 +139,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
 
     private void displayErrorMessage(){
         mRecyclerView.setVisibility(View.INVISIBLE);
-        errorMessage.setText(getString(R.string.no_review_error));
+        errorMessage.setText(getString(R.string.no_trailer_error));
         errorMessage.setVisibility(View.VISIBLE);
     }
 

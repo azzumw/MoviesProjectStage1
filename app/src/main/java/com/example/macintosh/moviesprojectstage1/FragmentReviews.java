@@ -35,10 +35,6 @@ public class FragmentReviews extends Fragment{
     private final String MOVIE_ID_KEY= "movie_id";
     private TextView errorMessage;
 
-    public FragmentReviews(){
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

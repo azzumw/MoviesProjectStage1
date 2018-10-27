@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="88dp"
     xmlns:tools="http://schemas.android.com/tools">
 
 
@@ -20,12 +20,13 @@
     <TextView
         android:id="@+id/reviewLabel"
         android:layout_width="match_parent"
-        android:layout_height="68dp"
+        android:layout_height="wrap_content"
         android:textColor="#fff"
         android:layout_below="@+id/authorNameLabel"
         android:layout_margin="5dp"
         android:padding="3dp"
         tools:text="@string/example_review_hint"
+        android:maxLines="5"
         android:textStyle="italic"/>
 
 

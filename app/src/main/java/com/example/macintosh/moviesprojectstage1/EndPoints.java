@@ -8,11 +8,11 @@ public enum EndPoints {
     String type;
 
     EndPoints(String type) {
-    this.type = type;
-   }
+        this.type = type;
+    }
 
 
-   public String getType(){
-       return type;
-   }
+    public String getType(){
+        return type;
+    }
 }

@@ -26,7 +26,6 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-//    www.youtube.com/watch?v=MDR3bfmzV8c&feature=youtu.be
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
     private static final String API_KEY_PARAM = "api_key";
@@ -36,7 +35,6 @@ public class NetworkUtils {
 
         Uri uri = Uri.parse(BASE_URL).buildUpon().appendPath(prefValue).appendQueryParameter(API_KEY_PARAM,API_KEY_VALUE).build();
 
-        Log.v("URI BUILT: ",uri.toString());
         URL  url = null;
 
         try {
@@ -46,7 +44,6 @@ public class NetworkUtils {
         }
 
         return url;
-
     }
 
     public static URL buildUrl(int id,String type){
@@ -118,7 +115,6 @@ public class NetworkUtils {
         }
 
         return parsedMovieData;
-
     }
 
     public static List<Trailer> getJSONTrailerData(String jsonString) throws JSONException {
@@ -150,7 +146,7 @@ public class NetworkUtils {
         final String REVIEW_KEY = "content";
         final String RESULTS_KEY = "results";
 
-      ArrayList<Review> parsedReviewData = new ArrayList<>();
+        ArrayList<Review> parsedReviewData = new ArrayList<>();
 
         JSONObject rootObj = new JSONObject(jsonString);
         JSONArray resultsArray = rootObj.getJSONArray(RESULTS_KEY);
@@ -160,8 +156,6 @@ public class NetworkUtils {
             String review = resultsArray.getJSONObject(i).getString(REVIEW_KEY);
             parsedReviewData.add(new Review(review,author));
         }
-
         return parsedReviewData;
     }
-
 }

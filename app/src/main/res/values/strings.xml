@@ -43,4 +43,6 @@
     <string name="example_review_hint">This is an example review. This is an example review.</string>
     <string name="trailerPageTitle">Trailers</string>
     <string name="reviewPageTitle">Reviews</string>
+    <string name="removedfromfavmsg">Removed from Favourites</string>
+    <string name="addToFavMsg">Added to Favourites</string>
 </resources>

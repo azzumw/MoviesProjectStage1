@@ -26,7 +26,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-       return fragmentTitles.get(position);
+        return fragmentTitles.get(position);
     }
 
 

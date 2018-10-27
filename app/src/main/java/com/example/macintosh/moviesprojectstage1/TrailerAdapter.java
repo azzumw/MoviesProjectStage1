@@ -42,12 +42,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     @Override
     public void onBindViewHolder(@NonNull TrailerViewHolder holder, int position) {
 //       Trailer currentTrailer = mTrailerList.get(position);
-       int trailerNumber = position+1;
+        int trailerNumber = position+1;
 
-       holder.txtView.setText(mContext.getString(R.string.trailer_1_dummy_string));
-       holder.txtView.append(" ");
-       holder.txtView.append(String.valueOf(trailerNumber));
-       Picasso.with(mContext).load(R.drawable.youtubeicon).into(holder.mIconYoutube);
+        holder.txtView.setText(mContext.getString(R.string.trailer_1_dummy_string));
+        holder.txtView.append(" ");
+        holder.txtView.append(String.valueOf(trailerNumber));
+        Picasso.with(mContext).load(R.drawable.youtubeicon).into(holder.mIconYoutube);
 
     }
 
