@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MoviesProjectStage1</string>
     <string name="sort_by_menu_title">Sort By</string>
-    <string name="error_message">Failed to get results. Please try again!</string>
+    <string name="error_message">No Network Connection. Please try again!</string>
     <string name="no_review_error">No Reviews Available</string>
     <string name="no_trailer_error">No Trailers Available</string>
 

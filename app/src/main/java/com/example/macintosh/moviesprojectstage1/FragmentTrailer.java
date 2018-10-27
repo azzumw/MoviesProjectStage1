@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,9 +39,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        Log.e("OnCreateView", "I am in OncReateView");
         view = inflater.inflate(R.layout.frag_trailer,container,false);
-
         return view;
     }
 
@@ -60,7 +57,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
         if(isOnline()){
             loadTrailers();
         }else{
-            displayErrorMessage();
+            displayErrorMessage(2);
         }
 
         mRecyclerView.setAdapter(mTrailerAdapter);
@@ -78,7 +75,6 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("OnCreate", "I am in OncReate");
 
         if(getArguments()!= null){
 
@@ -107,7 +103,7 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
                         try {
                             List<Trailer> trailersList = NetworkUtils.getJSONTrailerData(httpResponse[0]);
                             if(trailersList.isEmpty()){
-                                displayErrorMessage();
+                                displayErrorMessage(1);
                             }else {
 
                                 setTrailers(trailersList);
@@ -137,9 +133,12 @@ public class FragmentTrailer extends Fragment implements TrailerAdapter.TrailerA
         }
     }
 
-    private void displayErrorMessage(){
+    private void displayErrorMessage(int errorNumber){
         mRecyclerView.setVisibility(View.INVISIBLE);
-        errorMessage.setText(getString(R.string.no_trailer_error));
+        switch ((errorNumber)){
+            case 1: errorMessage.setText(getString(R.string.no_trailer_error));break;
+            case 2: errorMessage.setText(getString(R.string.error_message));break;
+        }
         errorMessage.setVisibility(View.VISIBLE);
     }
 
