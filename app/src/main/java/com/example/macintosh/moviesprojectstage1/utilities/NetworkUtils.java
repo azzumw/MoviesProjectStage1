@@ -29,7 +29,7 @@ public class NetworkUtils {
 
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
     private static final String API_KEY_PARAM = "api_key";
-    private static final String API_KEY_VALUE = "51ed01ec1db0ac9a518638cb27934aec";  //<--- insert your key here!
+    private static final String API_KEY_VALUE = "";  //<--- insert your key here!
 
     public static URL buildUrl(String prefValue)  {
 
