@@ -15,12 +15,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
-import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.example.macintosh.moviesprojectstage1.database.Review;
 import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.URL;

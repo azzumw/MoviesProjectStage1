@@ -4,7 +4,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.Movie;

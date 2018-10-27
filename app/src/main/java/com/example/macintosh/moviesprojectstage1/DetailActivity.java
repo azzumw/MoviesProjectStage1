@@ -1,20 +1,10 @@
 package com.example.macintosh.moviesprojectstage1;
 
-import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
@@ -25,17 +15,8 @@ import android.widget.Toast;
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
 import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
-import com.example.macintosh.moviesprojectstage1.database.Review;
-import com.example.macintosh.moviesprojectstage1.database.Trailer;
-import com.example.macintosh.moviesprojectstage1.utilities.NetworkUtils;
+
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
 
 public class DetailActivity extends AppCompatActivity {
 

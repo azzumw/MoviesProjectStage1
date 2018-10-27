@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.macintosh.moviesprojectstage1.database.AppDatabase;
-import com.example.macintosh.moviesprojectstage1.database.AppExecutors;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 
 import java.util.List;

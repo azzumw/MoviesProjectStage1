@@ -1,15 +1,11 @@
 package com.example.macintosh.moviesprojectstage1.database;
 
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.List;
 
 @Entity(tableName = "movie")
 public class Movie implements Parcelable{

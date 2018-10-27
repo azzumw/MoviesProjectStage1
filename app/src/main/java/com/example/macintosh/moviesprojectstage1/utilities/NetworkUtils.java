@@ -1,11 +1,8 @@
 package com.example.macintosh.moviesprojectstage1.utilities;
 
-import android.arch.lifecycle.LiveData;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.LinearLayout;
 
-import com.example.macintosh.moviesprojectstage1.EndPoints;
 import com.example.macintosh.moviesprojectstage1.database.Movie;
 import com.example.macintosh.moviesprojectstage1.database.Review;
 import com.example.macintosh.moviesprojectstage1.database.Trailer;
@@ -17,9 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.nio.channels.UnresolvedAddressException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
