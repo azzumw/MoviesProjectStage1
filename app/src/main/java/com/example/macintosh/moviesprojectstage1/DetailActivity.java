@@ -15,6 +15,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,11 +49,8 @@ public class DetailActivity extends AppCompatActivity {
     private AppDatabase mDb;
 
     private Movie movie;
-    private TrailerAdapter mTrailerAdapter;
-    private ReviewAdapter mReviewAdapter;
     private RecyclerView mRecyclerView;
-
-    private LinearLayoutManager linearLayoutManager;
+    private TrailerAdapter mTrailerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,36 +83,13 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-
-//        linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-
-//        mRecyclerView.setLayoutManager(linearLayoutManager);
-
-//        mRecyclerView.setHasFixedSize(true);
-
-//        mTrailerAdapter = new TrailerAdapter(getApplicationContext(),this);
-//        mReviewAdapter = new ReviewAdapter();
-        // make network request to get the video links
-
-//        mRecyclerView.setAdapter(mTrailerAdapter);
-
-//        if(isOnline()){
-//            loadTrailers();
-//        }else{
-//            displayErrorMessage();
-//        }
-
-        //viewpager and tablayout
-
-
-
         sendDataToFragments();
 
     }
 
     private void sendDataToFragments(){
 
-        CustomViewPager viewPager = findViewById(R.id.viewPagerId);
+        final CustomViewPager viewPager = findViewById(R.id.viewPagerId);
         FragmentManager fm = getSupportFragmentManager();
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(fm);
         viewPagerAdapter.addFragment(FragmentTrailer.getInstance(movie.getId()),getString(R.string.trailerPageTitle));
@@ -126,6 +101,15 @@ public class DetailActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tablayout_id);
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setAdapter(viewPagerAdapter);
+
+        viewPager.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                viewPager.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
     }
 

@@ -98,9 +98,10 @@
                     android:textColor="#fff"
                     android:textSize="14sp" />
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:orientation="vertical"
                     android:layout_below="@id/tvPlotSynopsisValue">
                     <android.support.design.widget.TabLayout
                         android:id="@+id/tablayout_id"
@@ -108,7 +109,7 @@
                         android:layout_height="wrap_content"
                         app:tabGravity="fill"
                         app:tabMode="fixed"
-                        android:overScrollMode="never"
+                        android:overScrollMode="always"
                         app:tabSelectedTextColor="#fff"
                         app:tabTextColor="#fff">
 
@@ -117,10 +118,11 @@
                         android:id="@+id/viewPagerId"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:overScrollMode="never">
+                        android:overScrollMode="never"
+                        android:focusedByDefault="true">
 
                     </com.example.macintosh.moviesprojectstage1.CustomViewPager>
-                </FrameLayout>
+                </LinearLayout>
 
             </RelativeLayout>
 

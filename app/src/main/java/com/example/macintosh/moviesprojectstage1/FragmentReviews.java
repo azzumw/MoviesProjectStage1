@@ -107,7 +107,12 @@ public class FragmentReviews extends Fragment{
                     public void run() {
                         try {
                             List<Review> reviewList = NetworkUtils.getJSONReviewData(httpResponse[0]);
-                            setReviews(reviewList);
+                            if(reviewList.isEmpty()){
+                                disPlayNoResultsFound();
+                            } else{
+                                setReviews(reviewList);
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -135,6 +140,12 @@ public class FragmentReviews extends Fragment{
     private void displayErrorMessage(){
         mRecyclerView.setVisibility(View.INVISIBLE);
         errorMessage.setText(getString(R.string.no_review_error));
+        errorMessage.setVisibility(View.VISIBLE);
+    }
+
+    private void disPlayNoResultsFound(){
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        errorMessage.setText("No reviews found");
         errorMessage.setVisibility(View.VISIBLE);
     }
 
